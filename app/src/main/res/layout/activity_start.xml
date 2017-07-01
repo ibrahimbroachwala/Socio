@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context="android.chatapp.ib.ichat.StartActivity">
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+        <TextView
+            android:layout_width="155dp"
+            android:layout_height="wrap_content"
+            android:text="Welcome to Ichat"
+            android:layout_marginTop="100dp"
+            android:textColor="#ffffff"
+            android:gravity="center"
+            android:textSize="27dp"
+            android:id="@+id/textView" />
+    <Button
+        android:id="@+id/start_login_but"
+        android:layout_width="184dp"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:background="@color/colorAccent"
+        android:textColor="#ffffff"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:layout_marginTop="30dp"
+        />
+
+    <Button
+        android:id="@+id/start_reg_but"
+        android:layout_width="184dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Create an account"
+        android:textSize="13dp"
+        android:background="@color/bgwhite"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_marginTop="5dp"
+
+        />
+
+</LinearLayout>
+</RelativeLayout>

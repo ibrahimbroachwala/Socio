@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#212121"
+    android:layout_height="match_parent"
+    tools:context="android.chatapp.ib.ichat.ProfileActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/prof_image"
+        android:src="@drawable/ic_person_black_24dp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/prof_name"
+        android:textColor="#ffffff"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:layout_gravity="center"
+        android:textSize="30dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/prof_status"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:textSize="20dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Friends: "
+            android:textColor="#fff"
+            android:textSize="18dp"/>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/prof_frcount"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:text="100"/>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="20dp"
+        android:id="@+id/prof_frreq_but"
+        android:textColor="#fff"
+        android:paddingRight="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorAccent"
+        android:text="Send Friend request"/>
+
+</LinearLayout>
