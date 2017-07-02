@@ -59,9 +59,6 @@ public class ProfileActivity extends AppCompatActivity {
         Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-
-
-
         mprofile_friendscount = (TextView) findViewById(R.id.prof_frcount);
         mprofile_name =(TextView) findViewById(R.id.prof_name);
         mprofile_status = (TextView) findViewById(R.id.prof_status);

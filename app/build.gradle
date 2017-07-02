@@ -36,8 +36,10 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.firebaseui:firebase-ui-database:1.1.1'
     compile 'id.zelory:compressor:2.0.0'
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
     testCompile 'junit:junit:4.12'
 }
+
 
 
 
