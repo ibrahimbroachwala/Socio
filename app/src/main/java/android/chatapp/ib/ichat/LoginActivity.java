@@ -13,9 +13,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,6 +28,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button log_but;
     private FirebaseAuth mAuth;
     private ProgressDialog pd;
+
+    private DatabaseReference userref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
         lemail = (TextInputLayout) findViewById(R.id.log_email);
         lpass = (TextInputLayout) findViewById(R.id.log_pass);
         log_but = (Button) findViewById(R.id.log_but);
+
+        userref = FirebaseDatabase.getInstance().getReference().child("Users");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -74,10 +82,21 @@ public class LoginActivity extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
                                 pd.dismiss();
-                            Intent mainintent = new Intent(LoginActivity.this,MainActivity.class);
-                            mainintent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(mainintent);
-                            finish();
+
+                            String Uid = mAuth.getCurrentUser().getUid();
+
+                            String token = FirebaseInstanceId.getInstance().getToken();
+                            userref.child(Uid).child("device_token").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Intent mainintent = new Intent(LoginActivity.this,MainActivity.class);
+                                    mainintent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(mainintent);
+                                    finish();
+                                }
+                            });
+
+
 
                         }else {
 

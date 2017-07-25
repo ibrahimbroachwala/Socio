@@ -21,6 +21,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".StartActivity" />
+        <service android:name=".FirebaseMessagingServiceClass">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".StartActivity" />
@@ -37,7 +42,14 @@
         <activity
             android:name=".UsersActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileActivity" >
+
+            <intent-filter>
+                <action android:name="android.chatapp.ib.ichat_TARGET_NOTIFICATION"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

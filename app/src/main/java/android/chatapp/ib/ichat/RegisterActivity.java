@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
@@ -107,6 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put("status","Ichat is Awesome!");
                             userMap.put("image","default");
                             userMap.put("thumb_image","default");
+                            userMap.put("device_token", FirebaseInstanceId.getInstance().getToken());
 
                             mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
