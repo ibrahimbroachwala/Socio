@@ -36,7 +36,7 @@ public class StatusActivity extends AppCompatActivity {
 
 
         if(mUser != null)
-        mDatabase.child("online").setValue(true);
+        mDatabase.child("online").setValue("true");
 
     }
 

@@ -28,6 +28,7 @@
             android:layout_weight="1.6"
             android:id="@+id/chat_message_text"
             android:cursorVisible="false"
+            android:hint="Type message..."
             android:layout_width="match_parent"
             android:layout_height="48dp" />
 

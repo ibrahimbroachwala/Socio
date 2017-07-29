@@ -57,17 +57,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
 
         FirebaseUser curr_user = mAuth.getCurrentUser();
 
         if (curr_user != null) {
-            mUserref.child("online").setValue(false);
+            mUserref.child("online").setValue(ServerValue.TIMESTAMP);
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             sendToStart();
         }else{
 
-            mUserref.child("online").setValue(true);
+            mUserref.child("online").setValue("true");
         }
     }
 

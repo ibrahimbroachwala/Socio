@@ -58,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         if(mUser != null)
-            mUserDatabase.child("online").setValue(true);
+            mUserDatabase.child("online").setValue("true");
 
     }
 

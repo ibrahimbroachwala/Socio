@@ -65,10 +65,8 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-
-
         if(mUser != null)
-        mDatabase.child("online").setValue(true);
+        mDatabase.child("online").setValue("true");
 
     }
 

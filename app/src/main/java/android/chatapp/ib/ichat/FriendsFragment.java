@@ -73,7 +73,7 @@ public class FriendsFragment extends Fragment {
             @Override
             protected void populateViewHolder(final FriendsViewHolder viewHolder, Friends model, int position) {
 
-                viewHolder.setDate(model.getDate());
+
                 final String friend_user_id = getRef(position).getKey();
 
 
@@ -82,13 +82,16 @@ public class FriendsFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final String username = dataSnapshot.child("name").getValue().toString();
                         String thumbimage = dataSnapshot.child("thumb_image").getValue().toString();
+                        String status = dataSnapshot.child("status").getValue().toString();
 
                         if(dataSnapshot.hasChild("online")) {
-                            Boolean useronline = (boolean) dataSnapshot.child("online").getValue();
+                            String useronline = dataSnapshot.child("online").getValue().toString();
                             viewHolder.setUserOnline(useronline);
                         }
                         viewHolder.setName(username);
                         viewHolder.setDp(thumbimage,getContext());
+                        viewHolder.setStatus(status);
+
 
                         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -148,10 +151,10 @@ public class FriendsFragment extends Fragment {
         }
 
 
-        public void setDate(String date){
+        public void setStatus(String status){
 
-            TextView user_name_tv = (TextView) mView.findViewById(R.id.user_item_status);
-            user_name_tv.setText(date);
+            TextView user_status_tv = (TextView) mView.findViewById(R.id.user_item_status);
+            user_status_tv.setText(status);
         }
 
 
@@ -164,10 +167,10 @@ public class FriendsFragment extends Fragment {
             Picasso.with(ctx).load(thumb_image).placeholder(R.drawable.ic_person_black_24dp).into(userdp);
         }
 
-        public void setUserOnline(boolean online){
+        public void setUserOnline(String online){
             ImageView onlineView = (ImageView)  mView.findViewById(R.id.user_item_online);
 
-            if(online){
+            if(online.equals("true")){
                 onlineView.setVisibility(View.VISIBLE);
             }else{
                 onlineView.setVisibility(View.INVISIBLE);
