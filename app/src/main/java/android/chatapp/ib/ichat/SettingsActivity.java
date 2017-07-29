@@ -61,6 +61,17 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ProgressDialog pd;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        if(mUser != null)
+        mDatabase.child("online").setValue(true);
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
