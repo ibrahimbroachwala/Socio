@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,9 +62,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        mUserref.child("online").setValue(false);
-    }
+        FirebaseUser curr_user = mAuth.getCurrentUser();
 
+        if (curr_user != null) {
+            mUserref.child("online").setValue(false);
+        }
+    }
     @Override
     public void onStart() {
         super.onStart();

@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -43,6 +44,7 @@ public class ChatApp extends Application {
 
                     if (dataSnapshot != null) {
                         mUserDatabase.child("online").onDisconnect().setValue(false);
+
 
 
                     }
