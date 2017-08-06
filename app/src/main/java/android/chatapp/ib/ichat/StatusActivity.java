@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 public class StatusActivity extends AppCompatActivity {
@@ -38,6 +39,18 @@ public class StatusActivity extends AppCompatActivity {
         if(mUser != null)
         mDatabase.child("online").setValue("true");
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        if(mUser != null)
+            mDatabase.child("online").setValue(ServerValue.TIMESTAMP);
     }
 
     @Override
@@ -69,8 +82,13 @@ public class StatusActivity extends AppCompatActivity {
                 mDatabase.child("status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful())
+                        if(task.isSuccessful()) {
                             pd.dismiss();
+
+                            finish();
+
+
+                        }
                     }
                 });
             }

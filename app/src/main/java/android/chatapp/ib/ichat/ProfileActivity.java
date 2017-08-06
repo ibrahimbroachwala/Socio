@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -28,10 +29,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView mprofile_name,mprofile_status,mprofile_friendscount;
-    private ImageView mprofile_image;
+    private CircleImageView mprofile_image;
     private Button mprofile_frndreq_but,mprof_frnreq_dec_but;
 
 
@@ -47,7 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference mFriendDatabase;
     private DatabaseReference rootref;
     private DatabaseReference notiref;
-    private String Uid;
+    private String Uid,user_key;
 
 
     @Override
@@ -55,10 +58,18 @@ public class ProfileActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-
-
         if(mUser != null)
             mUserDatabase.child("online").setValue("true");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(mUser != null)
+            mUserDatabase.child("online").setValue(ServerValue.TIMESTAMP);
 
     }
 
@@ -74,22 +85,24 @@ public class ProfileActivity extends AppCompatActivity {
 
         curr_state = 0;
 
+        user_key = getIntent().getStringExtra("from_user_id");
 
-
-        final String user_key = getIntent().getStringExtra("userid");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_key);
         mFriendreqDatabase = FirebaseDatabase.getInstance().getReference().child("Friendreq");
         mFriendDatabase = FirebaseDatabase.getInstance().getReference().child("Friends");
         Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         rootref = FirebaseDatabase.getInstance().getReference();
-        notiref = FirebaseDatabase.getInstance().getReference().child("Notifications");
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(Uid);
+        notiref = rootref.child("Notifications");
+        mUserDatabase = rootref.child("Users").child(Uid);
         mprofile_friendscount = (TextView) findViewById(R.id.prof_frcount);
         mprofile_name =(TextView) findViewById(R.id.prof_name);
         mprofile_status = (TextView) findViewById(R.id.prof_status);
         mprofile_frndreq_but = (Button) findViewById(R.id.prof_frreq_but);
-        mprofile_image = (ImageView) findViewById(R.id.prof_image);
+        mprofile_image = (CircleImageView) findViewById(R.id.prof_image);
         mprof_frnreq_dec_but = (Button) findViewById(R.id.prof_frreq_decline_but);
+
+        if(Uid.equals(user_key))
+            mprofile_frndreq_but.setVisibility(View.GONE);
 
         mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
         mprof_frnreq_dec_but.setEnabled(false);
@@ -105,7 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
                 mprofile_name.setText(dname);
                 Picasso.with(ProfileActivity.this).load(image).placeholder(R.drawable.ic_person_black_24dp).into(mprofile_image);
 
-                mFriendreqDatabase.child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                mFriendreqDatabase.child(Uid).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -133,7 +146,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 });
 
-                mFriendDatabase.child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                mFriendDatabase.child(Uid).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.hasChild(user_key)){
@@ -154,6 +167,40 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //Decline friend request
+
+        mprof_frnreq_dec_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                pd = new ProgressDialog(ProfileActivity.this);
+                pd.setMessage("Declining request..");
+                pd.show();
+
+
+                mFriendreqDatabase.child(Uid).child(user_key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        mFriendreqDatabase.child(user_key).child(Uid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                mprofile_frndreq_but.setEnabled(true);
+                                curr_state = 0;
+                                mprofile_frndreq_but.setText("Send Friend Request");
+                                mprof_frnreq_dec_but.setVisibility(View.GONE);
+                                mprof_frnreq_dec_but.setEnabled(false);
+
+                                pd.dismiss();
+                            }
+                        });
+                    }
+                });
+
+
 
             }
         });

@@ -20,11 +20,9 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
 
         switch (position){
-            case 0: RequestsFragment requestsFragment = new RequestsFragment();
-                return requestsFragment;
-            case 1: ChatsFragment chatsFragment = new ChatsFragment();
+            case 0: ChatsFragment chatsFragment = new ChatsFragment();
                 return chatsFragment;
-            case 2: FriendsFragment friendsFragment = new FriendsFragment();
+            case 1: FriendsFragment friendsFragment = new FriendsFragment();
                 return friendsFragment;
             default: return null;
         }
@@ -33,15 +31,14 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     public CharSequence getPageTitle(int position){
 
             switch (position){
-                case 0: return "Requests";
-                case 1: return "Chats";
-                case 2: return "Friends";
+                case 0: return "Chats";
+                case 1: return "Friends";
                 default: return null;
             }
 

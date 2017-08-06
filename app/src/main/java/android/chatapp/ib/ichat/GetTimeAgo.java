@@ -32,7 +32,7 @@ public class GetTimeAgo {
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
 
-    public String getTimeAgo(long time, Context ctx) {
+    public String getTimeAgo(long time) {
         if (time < 1000000000000L) {
             // if timestamp given in seconds, convert to millis
             time *= 1000;

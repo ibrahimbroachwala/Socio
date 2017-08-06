@@ -4,18 +4,16 @@
 
 
 
-        <item android:id="@+id/logout_but"
-            android:title="Logout"
-            app:showAsAction="always"
-            android:icon="@drawable/ic_exit_to_app_black_24dp"
-            android:orderInCategory="0"
-            />
 
-        <item android:id="@+id/settings_but"
-            android:title="Settings"
+
+        <item android:id="@+id/profile_but"
+            android:title="Profile"
             />
         <item android:id="@+id/allusers_but"
                 android:title="All Users"/>
 
-
+        <item android:id="@+id/logout_but"
+            android:title="Logout"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            />
 </menu>

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -51,8 +53,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private CircleImageView dp;
     private TextView mStatus,mDname;
-    private Button mChangeStatusbut;
-    private Button mChangeDpbut;
+    private ImageButton mChangeStatusbut;
+    private ImageButton mChangeDpbut;
 
     private static final int GALLERY_PICK = 1;
     private StorageReference mStorageRef;
@@ -70,6 +72,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(mUser != null)
+            mDatabase.child("online").setValue(ServerValue.TIMESTAMP);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,30 +92,26 @@ public class SettingsActivity extends AppCompatActivity {
         mStatus = (TextView) findViewById(R.id.settings_status);
         mDname = (TextView) findViewById(R.id.settings_dname);
         dp = (CircleImageView) findViewById(R.id.settings_dp);
-        mChangeStatusbut = (Button) findViewById(R.id.settings_edit_status_but);
-        mChangeDpbut = (Button) findViewById(R.id.settings_edit_image_but);
+        mChangeStatusbut = (ImageButton) findViewById(R.id.settings_edit_status_but);
+        mChangeDpbut = (ImageButton) findViewById(R.id.settings_edit_image_but);
 
         mCurrUser = FirebaseAuth.getInstance().getCurrentUser();
         Uid = mCurrUser.getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(Uid);
         mDatabase.keepSynced(true);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.settings_appbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Settings");
-
 
 
         mChangeDpbut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setType("image/*");
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-                startActivityForResult(Intent.createChooser(galleryIntent, "Select Image"),GALLERY_PICK);
-//                CropImage.activity()
-//                        .start(SettingsActivity.this);
+//                Intent galleryIntent = new Intent();
+//                galleryIntent.setType("image/*");
+//                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+//
+//                startActivityForResult(Intent.createChooser(galleryIntent, "Select Image"),GALLERY_PICK);
+                CropImage.activity()
+                        .start(SettingsActivity.this);
             }
         });
 

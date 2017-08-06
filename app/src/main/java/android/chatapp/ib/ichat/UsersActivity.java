@@ -44,7 +44,7 @@ public class UsersActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser muser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser muser = FirebaseAuth.getInstance().getCurrentUser();
         if(muser!=null)
             mDatabase.child(muser.getUid()).child("online").setValue("true");
 
@@ -56,23 +56,21 @@ public class UsersActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(UsersViewHolder viewHolder, Users model, int position) {
-
-                viewHolder.setName(model.getName());
-                viewHolder.setStatus(model.getStatus());
-                viewHolder.setDp(model.getThumb_image(),getApplicationContext());
-
                 final String user_id = getRef(position).getKey();
 
-                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                    viewHolder.setName(model.getName());
+                    viewHolder.setStatus(model.getStatus());
+                    viewHolder.setDp(model.getThumb_image(),getApplicationContext());
 
-                        Intent profIntent = new Intent(UsersActivity.this,ProfileActivity.class);
-                        profIntent.putExtra("userid",user_id);
-                        startActivity(profIntent);
-                    }
-                });
+                    viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
+                            Intent profIntent = new Intent(UsersActivity.this, ProfileActivity.class);
+                            profIntent.putExtra("from_user_id", user_id);
+                            startActivity(profIntent);
+                        }
+                    });
             }
         };
 

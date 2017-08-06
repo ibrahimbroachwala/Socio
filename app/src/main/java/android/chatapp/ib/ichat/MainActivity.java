@@ -1,20 +1,16 @@
 package android.chatapp.ib.ichat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.IntegerRes;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,9 +38,45 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Ichat home");
 
+        String type = "";
+        String userid = "";
+        String username= "";
+
+
+        if(getIntent().getExtras()!=null){
+
+            for(String key:getIntent().getExtras().keySet()){
+
+                switch (key){
+                    case "type": type = getIntent().getExtras().getString(key);
+                        break;
+                    case "from_user_id": userid = getIntent().getExtras().getString(key);
+                        break;
+                    case "from_username": username = getIntent().getExtras().getString(key);
+                }
+
+            }
+
+            if(type.equals("message")){
+                Intent chatIntent = new Intent(MainActivity.this,ChatActivity.class);
+                chatIntent.putExtra("userid",userid);
+                chatIntent.putExtra("username",username);
+                startActivity(chatIntent);
+            }else if(type.equals("request")){
+
+                Intent profIntent = new Intent(MainActivity.this,ProfileActivity.class);
+                profIntent.putExtra("userid",userid);
+                startActivity(profIntent);
+            }
+
+
+        }
+
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
 
         mAuth = FirebaseAuth.getInstance();
+
+        if(mAuth.getCurrentUser() != null)
         mUserref = FirebaseDatabase.getInstance().getReference().child("Users")
                 .child(mAuth.getCurrentUser().getUid());
 
@@ -104,10 +136,24 @@ public class MainActivity extends AppCompatActivity {
         {
 
             case R.id.logout_but :
-                mAuth.signOut();
-                sendToStart();
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle("Logout").setMessage("Do you want to logout?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                        mUserref.child("online").setValue(ServerValue.TIMESTAMP);
+
+                        mAuth.signOut();
+                        sendToStart();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
+
                 break;
-            case R.id.settings_but:
+            case R.id.profile_but:
                 Intent set_intent = new Intent(MainActivity.this,SettingsActivity.class);
                 startActivity(set_intent);
                 break;

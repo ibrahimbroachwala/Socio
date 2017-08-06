@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     tools:context="android.chatapp.ib.ichat.ChatsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Chats page" />
+        android:id="@+id/chats_rv"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 
 </FrameLayout>
