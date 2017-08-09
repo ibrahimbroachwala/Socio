@@ -1,5 +1,7 @@
 # Socio
 
+![Alt text](Socio/app/src/main/res/drawable/icon.png?raw=true "Socio")
+
 Social Application built entirely on firebase backend
 
 Features:
