@@ -64,12 +64,17 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = memail.getEditText().getText().toString().trim();
                 String pass = mpass.getEditText().getText().toString().trim();
 
+                int count = pass.length();
+
                 if(TextUtils.isEmpty(name)){
                     mname.setError("Empty Field");
                 }else if(TextUtils.isEmpty(email)){
                     memail.setError("Empty Field");
                 }else if(TextUtils.isEmpty(pass)){
                    mpass.setError("Empty Field");
+                }else if(count<6){
+                    mpass.setError("Minimum 6 characters");
+
                 }else {
                     register_user(name, email, pass);
                 }
@@ -105,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             HashMap<String,String> userMap = new HashMap<String, String>();
                             userMap.put("name",name);
-                            userMap.put("status","Ichat is Awesome!");
+                            userMap.put("status","On Socio");
                             userMap.put("image","default");
                             userMap.put("thumb_image","default");
                             userMap.put("device_token", FirebaseInstanceId.getInstance().getToken());

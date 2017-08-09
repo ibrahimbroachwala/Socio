@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,6 +55,15 @@ public class FriendsFragment extends Fragment {
         friends_rv.setHasFixedSize(true);
         friends_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab_add_friend);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Click action
+                Intent intent = new Intent(getContext(), UsersActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return v;
     }
@@ -108,13 +118,13 @@ public class FriendsFragment extends Fragment {
 
                                             if(which==0){
                                                 Intent profIntent = new Intent(getContext(),ProfileActivity.class);
-                                                profIntent.putExtra("userid",friend_user_id);
+                                                profIntent.putExtra("from_user_id",friend_user_id);
                                                 startActivity(profIntent);
                                             }
                                             if(which==1){
                                                 Intent chatIntent = new Intent(getContext(),ChatActivity.class);
-                                                chatIntent.putExtra("userid",friend_user_id);
-                                                chatIntent.putExtra("username",username);
+                                                chatIntent.putExtra("from_user_id",friend_user_id);
+                                                chatIntent.putExtra("from_username",username);
                                                 startActivity(chatIntent);
                                             }
                                     }

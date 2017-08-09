@@ -26,7 +26,7 @@
         android:orientation="horizontal"
         android:weightSum="10"
         android:id="@+id/chat_bottom_view"
-        android:background="#fff"
+        android:background="@color/colorPrimaryDark"
         android:layout_alignParentBottom="true">
 
 
@@ -35,13 +35,16 @@
             android:id="@+id/chat_add_but"
             android:layout_width="match_parent"
             android:layout_weight="4.2"
-            android:src="@drawable/ic_add_a_photo_black_24dp"
-            android:background="#fff"
+            android:src="@drawable/ic_add_a_photo_white_24dp"
+            android:background="@color/colorPrimaryDark"
             android:layout_height="48dp" />
         <EditText
             android:layout_weight="1.6"
             android:id="@+id/chat_message_text"
             android:hint="Type message..."
+            android:textColor="#fff"
+            android:background="@android:color/transparent"
+            android:textColorHint="@color/bgwhite"
             android:layout_width="match_parent"
             android:layout_height="48dp" />
 
@@ -50,8 +53,8 @@
             android:id="@+id/chat_send_but"
             android:layout_weight="4.2"
             android:layout_width="match_parent"
-            android:background="#fff"
-            android:src="@drawable/ic_send_black_24dp"
+            android:background="@color/colorPrimaryDark"
+            android:src="@drawable/ic_send_white_24dp"
             android:layout_height="48dp" />
     </LinearLayout>
     

@@ -2,6 +2,7 @@ package android.chatapp.ib.ichat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -36,41 +37,43 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.main_appbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Ichat home");
-
-        String type = "";
-        String userid = "";
-        String username= "";
+        getSupportActionBar().setTitle(R.string.app_name);
 
 
-        if(getIntent().getExtras()!=null){
-
-            for(String key:getIntent().getExtras().keySet()){
-
-                switch (key){
-                    case "type": type = getIntent().getExtras().getString(key);
-                        break;
-                    case "from_user_id": userid = getIntent().getExtras().getString(key);
-                        break;
-                    case "from_username": username = getIntent().getExtras().getString(key);
-                }
-
-            }
-
-            if(type.equals("message")){
-                Intent chatIntent = new Intent(MainActivity.this,ChatActivity.class);
-                chatIntent.putExtra("userid",userid);
-                chatIntent.putExtra("username",username);
-                startActivity(chatIntent);
-            }else if(type.equals("request")){
-
-                Intent profIntent = new Intent(MainActivity.this,ProfileActivity.class);
-                profIntent.putExtra("userid",userid);
-                startActivity(profIntent);
-            }
 
 
-        }
+
+
+
+
+//        if(getIntent().getExtras()!=null){
+//
+//            for(String key:getIntent().getExtras().keySet()){
+//
+//                switch (key){
+//                    case "type": type = getIntent().getExtras().getString(key);
+//                        break;
+//                    case "from_user_id": userid = getIntent().getExtras().getString(key);
+//                        break;
+//                    case "from_username": username = getIntent().getExtras().getString(key);
+//                }
+//
+//            }
+//
+//            if(type.equals("message")){
+//                Intent chatIntent = new Intent(MainActivity.this,ChatActivity.class);
+//                chatIntent.putExtra("userid",userid);
+//                chatIntent.putExtra("username",username);
+//                startActivity(chatIntent);
+//            }else if(type.equals("request")){
+//
+//                Intent profIntent = new Intent(MainActivity.this,ProfileActivity.class);
+//                profIntent.putExtra("userid",userid);
+//                startActivity(profIntent);
+//            }
+//
+//
+//        }
 
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
 
@@ -87,7 +90,12 @@ public class MainActivity extends AppCompatActivity {
 
         mTabLayout.setupWithViewPager(mviewpager);
 
+
+
+
     }
+
+
 
     @Override
     protected void onPause() {

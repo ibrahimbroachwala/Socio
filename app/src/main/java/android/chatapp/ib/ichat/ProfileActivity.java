@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -101,22 +103,55 @@ public class ProfileActivity extends AppCompatActivity {
         mprofile_image = (CircleImageView) findViewById(R.id.prof_image);
         mprof_frnreq_dec_but = (Button) findViewById(R.id.prof_frreq_decline_but);
 
+
+        mDatabase.keepSynced(true);
+
+
         if(Uid.equals(user_key))
             mprofile_frndreq_but.setVisibility(View.GONE);
 
         mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
         mprof_frnreq_dec_but.setEnabled(false);
+
+
+
+        mFriendDatabase.child(user_key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mprofile_friendscount.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 String dname = dataSnapshot.child("name").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
-                String image = dataSnapshot.child("image").getValue().toString();
+                final String image = dataSnapshot.child("image").getValue().toString();
 
                 mprofile_status.setText(status);
                 mprofile_name.setText(dname);
-                Picasso.with(ProfileActivity.this).load(image).placeholder(R.drawable.ic_person_black_24dp).into(mprofile_image);
+                if(!image.equals("default"))
+                Picasso.with(ProfileActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_person_black_24dp)
+                        .into(mprofile_image, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                Picasso.with(ProfileActivity.this).load(image)
+                                        .placeholder(R.drawable.ic_person_black_24dp).into(mprofile_image);
+                            }
+                        });
 
                 mFriendreqDatabase.child(Uid).addValueEventListener(new ValueEventListener() {
                     @Override

@@ -7,11 +7,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
         android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
@@ -36,8 +37,7 @@
             android:textSize="18dp"
             android:id="@+id/user_item_name"
             android:padding="5dp"
-            android:textColor="#000000"
-            android:text="Name"
+            android:textColor="#fff"
             />
 
             <ImageView
@@ -53,12 +53,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:id="@+id/user_item_status"
             android:textSize="15dp"
-            android:textColor="#777777"
-            android:text="Name"
-
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/bgwhite"
             />
 
 
@@ -70,9 +68,9 @@
     </LinearLayout>
 <LinearLayout
 android:layout_width="match_parent"
-android:layout_height="0.5dp"
+android:layout_height="0.1dp"
 android:layout_marginLeft="90dp"
-android:layout_marginRight="30dp"
-android:background="#6c6c6c"/>
+
+android:background="@color/colorAccent"/>
 
 </LinearLayout>

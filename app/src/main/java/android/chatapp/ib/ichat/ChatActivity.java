@@ -141,6 +141,8 @@ public class ChatActivity extends AppCompatActivity {
 
         mChatuser = getIntent().getStringExtra("from_user_id");
         mChatusername = getIntent().getStringExtra("from_username");
+
+
         //getSupportActionBar().setTitle(mChatusername);
 
         mRootref = FirebaseDatabase.getInstance().getReference();
@@ -166,6 +168,19 @@ public class ChatActivity extends AppCompatActivity {
         username_tv.setText(mChatusername);
 
         lastseen_tv.setVisibility(View.INVISIBLE);
+
+
+
+
+
+        muserdp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profIntent = new Intent(ChatActivity.this,ProfileActivity.class);
+                profIntent.putExtra("from_user_id",mChatuser);
+                startActivity(profIntent);
+            }
+        });
 
         mRootref.child("Users").child(mChatuser).addValueEventListener(new ValueEventListener() {
             @Override
@@ -254,6 +269,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void sendImage() {
 
@@ -566,8 +583,12 @@ public class ChatActivity extends AppCompatActivity {
                 lmessage.setBackgroundResource(R.drawable.message_bg_light);
                 limage.setBackgroundResource(R.drawable.message_bg_light);
                 text_tv.setTextColor(Color.WHITE);
+                itime_tv.setTextColor(Color.DKGRAY);
+                mtime_tv.setTextColor(Color.DKGRAY);
             }else{
                 lview.setGravity(Gravity.START);
+                itime_tv.setTextColor(Color.LTGRAY);
+                mtime_tv.setTextColor(Color.LTGRAY);
                 lmessage.setBackgroundResource(R.drawable.message_bg_dark);
                 limage.setBackgroundResource(R.drawable.message_bg_dark);
                 text_tv.setTextColor(Color.WHITE);
@@ -623,7 +644,6 @@ public class ChatActivity extends AppCompatActivity {
                                 String online = dataSnapshot.getValue().toString();
 
                                 if(!online.equals("true")){
-
 
                                     Map notimap = new HashMap();
                                     notimap.put("from",Uid);

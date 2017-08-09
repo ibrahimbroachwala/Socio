@@ -67,36 +67,45 @@
             android:textColor="#fff"
             android:textSize="18dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/prof_frcount"
-        android:textColor="#fff"
-        android:layout_gravity="center"
-        android:text="100"/>
+        <TextView
+            android:id="@+id/prof_frcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="#fff" />
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingLeft="20dp"
         android:id="@+id/prof_frreq_but"
-        android:textColor="#fff"
-        android:paddingRight="20dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/colorAccent"
-        android:text="Send Friend request"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_above="@+id/prof_frreq_decline_but"
         android:layout_gravity="center"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif-condensed"
         android:paddingLeft="20dp"
-        android:id="@+id/prof_frreq_decline_but"
-        android:textColor="@color/colorPrimaryDark"
         android:paddingRight="20dp"
-        android:layout_marginTop="10dp"
+        android:text="Send Friend request"
+        android:textColor="#fff" />
+
+    <Button
+        android:id="@+id/prof_frreq_decline_but"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
         android:background="@color/bgwhite"
-        android:text="Decline Friend Request"/>
+        android:fontFamily="sans-serif-condensed"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Decline Friend Request"
+        android:textColor="@color/colorPrimaryDark" />
+    </RelativeLayout>
 
 </LinearLayout>

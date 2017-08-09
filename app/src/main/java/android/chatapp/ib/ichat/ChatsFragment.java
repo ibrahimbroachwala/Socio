@@ -3,6 +3,7 @@ package android.chatapp.ib.ichat;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +43,9 @@ public class ChatsFragment extends Fragment {
     private DatabaseReference rootRef;
     private DatabaseReference userRef;
     private DatabaseReference messageRef;
+
+    private String sharedText;
+    private Uri shared_imgUri;
 
 
 
@@ -94,7 +99,7 @@ public class ChatsFragment extends Fragment {
 
 
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                        alertDialogBuilder.setTitle("Delete Chat?").setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        alertDialogBuilder.setTitle("Clear Chat?").setPositiveButton("Clear", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
 
@@ -106,7 +111,7 @@ public class ChatsFragment extends Fragment {
                                 rootRef.updateChildren(delchatmap).addOnSuccessListener(new OnSuccessListener() {
                                     @Override
                                     public void onSuccess(Object o) {
-                                        Toast.makeText(getContext(), "Chat deleted", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Chat Cleared!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -114,16 +119,6 @@ public class ChatsFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                             }
                         }).show();
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
                         
                         return true;
                     }
@@ -178,9 +173,12 @@ public class ChatsFragment extends Fragment {
 
                         for (DataSnapshot child: dataSnapshot.getChildren()) {
                             if(child.child("type").getValue().toString().equals("image"))
-                                lastmessage = "image";
+                                lastmessage = "Image";
                             else
                                 lastmessage = child.child("message").getValue().toString();
+
+                            if(lastmessage==null)
+                                viewHolder.setLastmessage("");
                             viewHolder.setLastmessage(lastmessage);
                         }
                     }

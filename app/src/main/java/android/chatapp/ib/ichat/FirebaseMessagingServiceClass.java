@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -29,25 +31,24 @@ public class FirebaseMessagingServiceClass extends FirebaseMessagingService {
         String noticlick = remoteMessage.getNotification().getClickAction();
         String userid = remoteMessage.getData().get("from_user_id");
         String username = remoteMessage.getData().get("from_username");
-        String type = remoteMessage.getData().get("type");
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(notiTitle)
-                .setContentText(notiMessage)
-                .setDefaults(NotificationCompat.DEFAULT_SOUND);
 
 
 
         int notiId = (int) System.currentTimeMillis();
 
         resultIntent = new Intent(noticlick);
-
-        resultIntent.putExtra("userid",userid);
+        resultIntent.putExtra("from_user_id",userid);
         resultIntent.putExtra("username",username);
 
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, resultIntent,
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, resultIntent,
                 PendingIntent.FLAG_ONE_SHOT);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(notiTitle)
+                .setContentText(notiMessage)
+                .setSound(alarmSound);
         mBuilder.setContentIntent(resultPendingIntent);
 
         //mBuilder.addAction(R.mipmap.ic_launcher,"View message",resultPendingIntent);

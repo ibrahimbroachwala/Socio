@@ -105,13 +105,13 @@ public class SettingsActivity extends AppCompatActivity {
         mChangeDpbut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent galleryIntent = new Intent();
-//                galleryIntent.setType("image/*");
-//                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//
-//                startActivityForResult(Intent.createChooser(galleryIntent, "Select Image"),GALLERY_PICK);
-                CropImage.activity()
-                        .start(SettingsActivity.this);
+                Intent galleryIntent = new Intent();
+                galleryIntent.setType("image/*");
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(galleryIntent, "Select Image"),GALLERY_PICK);
+//                CropImage.activity()
+//                        .start(SettingsActivity.this);
             }
         });
 
@@ -157,8 +157,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-
-
 
     }
 

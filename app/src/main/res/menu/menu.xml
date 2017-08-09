@@ -10,7 +10,8 @@
             android:title="Profile"
             />
         <item android:id="@+id/allusers_but"
-                android:title="All Users"/>
+                android:title="Search Users"
+            />
 
         <item android:id="@+id/logout_but"
             android:title="Logout"

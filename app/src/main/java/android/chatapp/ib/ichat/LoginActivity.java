@@ -61,10 +61,14 @@ public class LoginActivity extends AppCompatActivity {
                 String email = lemail.getEditText().getText().toString().trim();
                 String pass = lpass.getEditText().getText().toString().trim();
 
-                if(TextUtils.isEmpty(email))
+                if(TextUtils.isEmpty(email)) {
                     lemail.setError("Empty Field");
-                else if(TextUtils.isEmpty(pass))
+                    pd.dismiss();
+                }
+                else if(TextUtils.isEmpty(pass)) {
                     lpass.setError("Empty Field");
+                    pd.dismiss();
+                }
                 else signin(email,pass);
             }
         });
