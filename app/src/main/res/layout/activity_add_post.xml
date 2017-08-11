@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context="android.chatapp.ib.ichat.AddPostActivity">
+
+    <include layout="@layout/appbar_layout" android:id="@+id/new_post_appbar"/>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/new_post_addphoto_but"
+    android:layout_below="@id/new_post_appbar">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark">
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:hint="What's Happening..?"
+        android:background="@android:color/transparent"
+        android:id="@+id/new_post_text"
+        android:textColorHint="@color/bgwhite"
+        android:textColor="#fff"
+        android:layout_margin="30dp"
+        android:textSize="21dp"/>
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:id="@+id/new_post_image"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/new_post_text"/>
+
+
+    </RelativeLayout>
+</ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_above="@+id/new_post_addphoto_but"
+        android:gravity="center"
+        android:textSize="10dp"
+        android:text="Only your Friends can see your moments"
+        android:textColor="@color/bgwhite"/>
+
+
+    <Button
+        android:id="@+id/new_post_addphoto_but"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:background="@color/bgwhite"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_above="@+id/sub_post_but"
+        android:text="Add Photo"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <Button
+        android:id="@+id/sub_post_but"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Share Moment"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>

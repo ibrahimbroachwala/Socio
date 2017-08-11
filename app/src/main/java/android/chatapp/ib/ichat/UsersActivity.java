@@ -55,10 +55,6 @@ public class UsersActivity extends AppCompatActivity {
         if(muser!=null)
             mDatabase.child(muser.getUid()).child("online").setValue("true");
 
-
-
-
-
     }
 
 

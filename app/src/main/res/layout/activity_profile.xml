@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,6 +7,10 @@
     android:background="#212121"
     android:layout_height="match_parent"
     tools:context="android.chatapp.ib.ichat.ProfileActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="match_parent"
@@ -75,17 +79,19 @@
             android:fontFamily="sans-serif-condensed"
             android:textColor="#fff" />
     </LinearLayout>
+    </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
     <Button
         android:id="@+id/prof_frreq_but"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_above="@+id/prof_frreq_decline_but"
         android:layout_gravity="center"
         android:background="@color/colorAccent"
         android:fontFamily="sans-serif-condensed"
@@ -98,7 +104,6 @@
         android:id="@+id/prof_frreq_decline_but"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:background="@color/bgwhite"
         android:fontFamily="sans-serif-condensed"
@@ -106,6 +111,6 @@
         android:paddingRight="20dp"
         android:text="Decline Friend Request"
         android:textColor="@color/colorPrimaryDark" />
-    </RelativeLayout>
+    </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

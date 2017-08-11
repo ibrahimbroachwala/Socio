@@ -131,11 +131,11 @@ public class SettingsActivity extends AppCompatActivity {
                 String name = dataSnapshot.child("name").getValue().toString();
                 final String image = dataSnapshot.child("image").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
-                String thumb_image = dataSnapshot.child("thumb_image").getValue().toString();
+                //String thumb_image = dataSnapshot.child("thumb_image").getValue().toString();
 
                 if(!image.equals("default")) {
                     Picasso.with(SettingsActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE)
-                            .placeholder(R.drawable.ic_person_black_24dp).into(dp, new Callback() {
+                            .placeholder(R.drawable.image_load_anim).into(dp, new Callback() {
                         @Override
                         public void onSuccess() {
 
@@ -144,7 +144,7 @@ public class SettingsActivity extends AppCompatActivity {
                         @Override
                         public void onError() {
                             Picasso.with(SettingsActivity.this).load(image)
-                                    .placeholder(R.drawable.ic_person_black_24dp).into(dp);
+                                    .placeholder(R.drawable.image_load_anim).into(dp);
                         }
                     });
                 }
@@ -173,7 +173,7 @@ public class SettingsActivity extends AppCompatActivity {
                 uploadImage(resultUri);
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
+                Toast.makeText(this, result.getError().toString(), Toast.LENGTH_SHORT).show();
             }
         }
 

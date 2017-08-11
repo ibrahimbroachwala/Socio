@@ -1,20 +1,16 @@
 package android.chatapp.ib.ichat;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.icu.text.DateFormat;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -110,7 +106,7 @@ public class ProfileActivity extends AppCompatActivity {
         if(Uid.equals(user_key))
             mprofile_frndreq_but.setVisibility(View.GONE);
 
-        mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
+        mprof_frnreq_dec_but.setVisibility(View.GONE);
         mprof_frnreq_dec_but.setEnabled(false);
 
 
@@ -139,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity {
                 mprofile_status.setText(status);
                 mprofile_name.setText(dname);
                 if(!image.equals("default"))
-                Picasso.with(ProfileActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_person_black_24dp)
+                Picasso.with(ProfileActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.image_load_anim)
                         .into(mprofile_image, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -149,7 +145,7 @@ public class ProfileActivity extends AppCompatActivity {
                             @Override
                             public void onError() {
                                 Picasso.with(ProfileActivity.this).load(image)
-                                        .placeholder(R.drawable.ic_person_black_24dp).into(mprofile_image);
+                                        .placeholder(R.drawable.image_load_anim).into(mprofile_image);
                             }
                         });
 
@@ -401,21 +397,31 @@ public class ProfileActivity extends AppCompatActivity {
                 //Unfriend
 
                 if(curr_state==3){
-                    mFriendDatabase.child(Uid).child(user_key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            mFriendDatabase.child(user_key).child(Uid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileActivity.this);
+                    alertDialogBuilder.setTitle("Unfriend?").setMessage("You wil have to send request to be friends again.Unfriend?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            mFriendDatabase.child(Uid).child(user_key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    mprofile_frndreq_but.setEnabled(true);
-                                    curr_state =0;
-                                    mprofile_frndreq_but.setText("Send Friend Request");
-                                    mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
-                                    mprof_frnreq_dec_but.setEnabled(false);
+                                    mFriendDatabase.child(user_key).child(Uid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            mprofile_frndreq_but.setEnabled(true);
+                                            curr_state =0;
+                                            mprofile_frndreq_but.setText("Send Friend Request");
+                                            mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
+                                            mprof_frnreq_dec_but.setEnabled(false);
+                                        }
+                                    });
                                 }
                             });
                         }
-                    });
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }).show();
 
                 }
             }

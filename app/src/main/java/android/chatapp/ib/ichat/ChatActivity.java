@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -119,10 +120,11 @@ public class ChatActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mAdapter = new MessageAdapter(messagesList);
+        //mAdapter = new MessageAdapter(messagesList);
 
         mmessageslist = (RecyclerView) findViewById(R.id.messages_rv);
-        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
 
         //linearLayoutManager.setReverseLayout(true);
 
@@ -166,12 +168,7 @@ public class ChatActivity extends AppCompatActivity {
         
 
         username_tv.setText(mChatusername);
-
-        lastseen_tv.setVisibility(View.INVISIBLE);
-
-
-
-
+        lastseen_tv.setVisibility(View.GONE);
 
         muserdp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -406,8 +403,6 @@ public class ChatActivity extends AppCompatActivity {
                                 mRootref.updateChildren(delmap).addOnSuccessListener(new OnSuccessListener() {
                                     @Override
                                     public void onSuccess(Object o) {
-
-                                        linearLayoutManager.smoothScrollToPosition(mmessageslist, null, 49);
                                         Toast.makeText(ChatActivity.this, "Message Deleted", Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -425,7 +420,6 @@ public class ChatActivity extends AppCompatActivity {
         };
 
         mmessageslist.setAdapter(firebaseRecyclerAdapter);
-
         mmessageslist.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -439,25 +433,13 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-
         firebaseRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-                int friendlyMessageCount = firebaseRecyclerAdapter.getItemCount();
-                int lastVisiblePosition =
-                        linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                // If the recycler view is initially being loaded or the
-                // user is at the bottom of the list, scroll to the bottom
-                // of the list to show the newly added message.
-                if (lastVisiblePosition != -1 ||
-                        (positionStart >= (friendlyMessageCount-1) &&
-                                lastVisiblePosition == (positionStart - 1))) {
-                    mmessageslist.smoothScrollToPosition(positionStart);
-                }
+                mmessageslist.smoothScrollToPosition(positionStart);
+                linearLayoutManager.setReverseLayout(false);
+                linearLayoutManager.setStackFromEnd(true);
             }
         });
 
@@ -498,13 +480,13 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
-    public static class mViewHolder extends RecyclerView.ViewHolder{
+    public static class mViewHolder extends RecyclerView.ViewHolder {
 
 
         View mView;
-        TextView mtime_tv,text_tv,itime_tv;
+        TextView mtime_tv, text_tv, itime_tv;
         ImageView imageview;
-        LinearLayout lview,lmessage,limage;
+        LinearLayout lview, lmessage, limage;
 
         final LinearLayout.LayoutParams params;
 
@@ -516,7 +498,7 @@ public class ChatActivity extends AppCompatActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT);
         }
 
-        public void initialize(){
+        public void initialize() {
 
             mtime_tv = (TextView) mView.findViewById(R.id.message_item_time);
             itime_tv = (TextView) mView.findViewById(R.id.image_item_time);
@@ -531,15 +513,13 @@ public class ChatActivity extends AppCompatActivity {
         }
 
 
+        public void setType(String type) {
 
-
-        public void setType(String type){
-
-            if(type.equals("text")) {
+            if (type.equals("text")) {
                 params.height = 0;
                 lmessage.setVisibility(View.VISIBLE);
 
-            }else if(type.equals("image")){
+            } else if (type.equals("image")) {
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 lmessage.setVisibility(View.GONE);
             }
@@ -548,44 +528,44 @@ public class ChatActivity extends AppCompatActivity {
 
         }
 
-        public void setTime(long time,String type){
+        public void setTime(long time, String type) {
 
             GetTimeAgo gta = new GetTimeAgo();
             String lastseentime = gta.getTimeAgo(time);
 
 
-            if(type.equals("text")) {
+            if (type.equals("text")) {
                 mtime_tv.setText(lastseentime);
                 itime_tv.setVisibility(View.INVISIBLE);
                 mtime_tv.setVisibility(View.VISIBLE);
-            }
-            else if(type.equals("image")) {
+            } else if (type.equals("image")) {
                 itime_tv.setText(lastseentime);
                 itime_tv.setVisibility(View.VISIBLE);
                 mtime_tv.setVisibility(View.INVISIBLE);
             }
         }
-        public void setMessage(String text,String type,Context ctx){
 
-            if(type.equals("text")){
+        public void setMessage(String text, String type, Context ctx) {
+
+            if (type.equals("text")) {
                 text_tv.setText(text);
 
-            }else if(type.equals("image")){
-                Picasso.with(ctx).load(text).placeholder(R.drawable.ic_person_black_24dp)
+            } else if (type.equals("image")) {
+                Picasso.with(ctx).load(text).placeholder(R.drawable.image_load_anim)
                         .into(imageview);
             }
         }
 
-        public  void  setPosition(String Uid,String from){
+        public void setPosition(String Uid, String from) {
 
-            if(Uid.equals(from)){
+            if (Uid.equals(from)) {
                 lview.setGravity(Gravity.END);
                 lmessage.setBackgroundResource(R.drawable.message_bg_light);
                 limage.setBackgroundResource(R.drawable.message_bg_light);
                 text_tv.setTextColor(Color.WHITE);
                 itime_tv.setTextColor(Color.DKGRAY);
                 mtime_tv.setTextColor(Color.DKGRAY);
-            }else{
+            } else {
                 lview.setGravity(Gravity.START);
                 itime_tv.setTextColor(Color.LTGRAY);
                 mtime_tv.setTextColor(Color.LTGRAY);
@@ -600,13 +580,43 @@ public class ChatActivity extends AppCompatActivity {
 //            Picasso.with(ctx).load(thumb_image).placeholder(R.drawable.ic_person_black_24dp).into(userdp);
 //        }
     }
-
     private void sendmessage() {
         final String message = messagetext.getText().toString();
         messagetext.setText("");
         final String Uid = mAuth.getCurrentUser().getUid();
 
         if(!TextUtils.isEmpty(message)){
+
+            mRootref.child("Chat").child(mChatuser).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.hasChild(Uid)){
+                        Map chataddmap = new HashMap();
+                        chataddmap.put("seen","false");
+                        chataddmap.put("timestamp",ServerValue.TIMESTAMP);
+
+                        Map chatusermap = new HashMap();
+                        chatusermap.put("Chat/"+mChatuser+"/"
+                                +Uid,chataddmap);
+
+                        mRootref.updateChildren(chatusermap, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                if(databaseError!=null){
+                                    Log.d("CHAT_LOG",databaseError.getMessage().toString());
+                                }
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
 
             String curruserref = "messages/"+Uid+"/"+mChatuser;
             String chatuserref = "messages/"+mChatuser+"/"+Uid;
