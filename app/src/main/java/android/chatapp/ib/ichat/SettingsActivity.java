@@ -1,10 +1,12 @@
 package android.chatapp.ib.ichat;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -50,11 +52,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     private FirebaseUser mCurrUser;
+    private FirebaseAuth mAuth;
 
     private CircleImageView dp;
     private TextView mStatus,mDname;
     private ImageButton mChangeStatusbut;
     private ImageButton mChangeDpbut;
+
+    private Button logout_but;
 
     private static final int GALLERY_PICK = 1;
     private StorageReference mStorageRef;
@@ -88,9 +93,12 @@ public class SettingsActivity extends AppCompatActivity {
         
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
+        mAuth = FirebaseAuth.getInstance();
+
 
         mStatus = (TextView) findViewById(R.id.settings_status);
         mDname = (TextView) findViewById(R.id.settings_dname);
+        logout_but = (Button) findViewById(R.id.settings_logout_but);
         dp = (CircleImageView) findViewById(R.id.settings_dp);
         mChangeStatusbut = (ImageButton) findViewById(R.id.settings_edit_status_but);
         mChangeDpbut = (ImageButton) findViewById(R.id.settings_edit_image_but);
@@ -99,6 +107,25 @@ public class SettingsActivity extends AppCompatActivity {
         Uid = mCurrUser.getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(Uid);
         mDatabase.keepSynced(true);
+
+
+        logout_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
+                alertDialogBuilder.setTitle("Logout").setMessage("Do you want to logout?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDatabase.child("online").setValue(ServerValue.TIMESTAMP);
+                        mAuth.signOut();
+                        sendToStart();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
+            }
+        });
+
 
 
 
@@ -158,6 +185,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void sendToStart(){
+        Intent start_int = new Intent(SettingsActivity.this, StartActivity.class);
+        startActivity(start_int);
+        finish();
     }
 
     @Override

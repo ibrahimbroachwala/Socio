@@ -170,6 +170,8 @@ public class ChatActivity extends AppCompatActivity {
         username_tv.setText(mChatusername);
         lastseen_tv.setVisibility(View.GONE);
 
+        mRootref.child("Chat").keepSynced(true);
+
         muserdp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,8 +300,8 @@ public class ChatActivity extends AppCompatActivity {
         final String Uid = mAuth.getCurrentUser().getUid();
 
         Random random = new Random();
-        StorageReference filepath = mStorageRef.child("image_messages").child(Uid).child(mChatuser).child(random.nextInt(100000)+".jpg");
 
+        StorageReference filepath = mStorageRef.child("image_messages").child(Uid).child(mChatuser).child(random.nextInt(10000000)+".jpg");
         File image_file = new File(resultUri.getPath());
 
         Bitmap compressedImageBitmap = new Compressor(this)

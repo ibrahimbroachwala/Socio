@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -75,6 +76,10 @@ public class PostsFragment extends Fragment{
 
         posts_rv.setHasFixedSize(true);
 
+        allPostsRef.keepSynced(true);
+        postRef.child(Uid).keepSynced(true);
+        userRef.keepSynced(true);
+
 
         posts_rv.setLayoutManager(linearLayoutManager);
 
@@ -107,15 +112,14 @@ public class PostsFragment extends Fragment{
             @Override
             protected void populateViewHolder(final MomentsViewHolder viewHolder, Moment model, int position) {
 
-
-                String By = model.getBy();
+                final String By = model.getBy();
                 long timestamp = model.getTimestamp();
                 final String liked = model.getLiked();
 
                 viewHolder.initialize();
 
                 GetTimeAgo gta = new GetTimeAgo();
-                String momentposttime = gta.getTimeAgo(timestamp);
+                final String momentposttime = gta.getTimeAgo(timestamp);
                 viewHolder.setTime(momentposttime);
 
                 final String moment_id = getRef(position).getKey();
@@ -187,6 +191,36 @@ public class PostsFragment extends Fragment{
                 });
 
 
+                viewHolder.comments_but.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent commentIntent = new Intent(getActivity(),CommentsActivity.class);
+                        commentIntent.putExtra("moment_id",moment_id);
+                        commentIntent.putExtra("name",By);
+                        commentIntent.putExtra("time",momentposttime);
+                        startActivity(commentIntent);
+                    }
+                });
+
+
+
+
+
+
+                allPostsRef.child(moment_id).child("comments").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        viewHolder.setCommentsCount(((int) dataSnapshot.getChildrenCount()));
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
 
 
 
@@ -229,12 +263,11 @@ public class PostsFragment extends Fragment{
     }
 
     public static class MomentsViewHolder extends RecyclerView.ViewHolder{
-
-
         View mView;
         ImageView likes_but;
         LinearLayout imageView;
         LinearLayout textView;
+        ImageView comments_but;
 
         public MomentsViewHolder(View itemView) {
             super(itemView);
@@ -246,9 +279,14 @@ public class PostsFragment extends Fragment{
             likes_but = (ImageView) mView.findViewById(R.id.mom_likes_image);
             imageView = (LinearLayout) mView.findViewById(R.id.mom_image_view);
             textView = (LinearLayout) mView.findViewById(R.id.mom_text_view);
+            comments_but = (ImageView) mView.findViewById(R.id.mom_comment_but);
         }
 
 
+        public void setCommentsCount(int count){
+            TextView setcount_tv = (TextView) mView.findViewById(R.id.mom_comments_text);
+            setcount_tv.setText(count+"");
+        }
         public void setImage(String image, Context ctx){
             ImageView moment_image = (ImageView) mView.findViewById(R.id.mom_image_item);
             Picasso.with(ctx).load(image).placeholder(R.drawable.image_load_anim).into(moment_image);
@@ -261,7 +299,6 @@ public class PostsFragment extends Fragment{
         public void setLikes(final int likes){
             TextView setLikes_tv = (TextView) mView.findViewById(R.id.mom_likes_text);
             setLikes_tv.setText(likes+"");
-
         }
 
 

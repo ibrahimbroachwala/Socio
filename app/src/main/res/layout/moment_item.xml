@@ -111,8 +111,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:id="@+id/mom_likes_image"
                     />
                 <TextView
@@ -121,6 +121,21 @@
                     android:text="0"
                     android:layout_gravity="center_vertical"
                     android:id="@+id/mom_likes_text"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="#fff"/>
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginLeft="12dp"
+                    android:id="@+id/mom_comment_but"
+                    android:src="@drawable/comment_but"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/mom_comments_text"
                     android:layout_marginLeft="5dp"
                     android:textColor="#fff"/>
 

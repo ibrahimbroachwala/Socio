@@ -65,9 +65,11 @@ public class ChatsFragment extends Fragment {
         messageRef = FirebaseDatabase.getInstance().getReference().child("messages").child(Uid);
 
 
-        chatRef.keepSynced(true);
+        chatRef.child(Uid).keepSynced(true);
         userRef.keepSynced(true);
         messageRef.keepSynced(true);
+
+
         chats_rv.setHasFixedSize(true);
         chats_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
 

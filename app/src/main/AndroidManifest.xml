@@ -74,8 +74,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddPostActivity"
-            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".AddPostActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".CommentsActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

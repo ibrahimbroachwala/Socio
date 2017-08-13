@@ -83,7 +83,7 @@ public class AddPostActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         Uid = mAuth.getCurrentUser().getUid();
 
-        friends_IdList = new ArrayList();
+        friends_IdList = new ArrayList<String>();
 
 
         allPostsRef = FirebaseDatabase.getInstance().getReference().child("AllPosts");
@@ -92,6 +92,11 @@ public class AddPostActivity extends AppCompatActivity {
         friendsRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(Uid);
 
         mStorageref = FirebaseStorage.getInstance().getReference();
+
+        allPostsRef.keepSynced(true);
+        postsToShowRef.keepSynced(true);
+        usersPostRef.keepSynced(true);
+        friendsRef.keepSynced(true);
 
 
         post_image_but = (Button) findViewById(R.id.new_post_addphoto_but);
@@ -179,7 +184,9 @@ public class AddPostActivity extends AppCompatActivity {
                                                     public void onSuccess(Void aVoid) {
 
                                                         Toast.makeText(AddPostActivity.this, "Succesfully Posted", Toast.LENGTH_SHORT).show();
+                                                        post_text_et.setText("");
                                                         pd.dismiss();
+                                                        finish();
 
                                                     }
                                                 });
@@ -225,7 +232,9 @@ public class AddPostActivity extends AppCompatActivity {
                                                 public void onSuccess(Void aVoid) {
 
                                                     Toast.makeText(AddPostActivity.this, "Succesfully Posted", Toast.LENGTH_SHORT).show();
+                                                    post_text_et.setText("");
                                                     pd.dismiss();
+                                                    finish();
 
                                                 }
                                             });

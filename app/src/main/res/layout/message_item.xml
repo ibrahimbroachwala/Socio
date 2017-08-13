@@ -21,6 +21,8 @@
         android:paddingTop="10dp"
         android:paddingLeft="10dp"
         android:paddingBottom="2dp"
+        android:autoLink="all"
+        android:textColorLink="#fff"
         android:textColor="#fff"
         android:id="@+id/message_item_text"
         />

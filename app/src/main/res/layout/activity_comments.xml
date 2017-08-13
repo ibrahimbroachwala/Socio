@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context="android.chatapp.ib.ichat.CommentsActivity">
+
+    <include layout="@layout/appbar_layout" android:id="@+id/comments_appbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:layout_below="@id/comments_appbar"
+        android:gravity="center_vertical"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/comment_on_bar">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="#fff"
+            android:id="@+id/comment_on_tv"
+            android:textStyle="bold"
+           />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/comment_on_time"
+            android:text="time"
+            android:textColor="@color/bgwhite"
+            android:layout_marginLeft="20dp"
+            android:textSize="12dp"/>
+
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/Add_comment_et"
+        android:layout_below="@+id/comment_on_bar"
+        android:id="@+id/comments_rv">
+
+    </android.support.v7.widget.RecyclerView>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Add_comment_et"
+        android:hint="Add comment.."
+        android:textColorHint="@color/bgwhite"
+        android:textColor="#fff"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="5dp"
+        android:textSize="21dp"
+        android:padding="10dp"
+        android:layout_above="@+id/sub_comment_but"
+        android:background="@color/colorPrimaryDark"/>
+
+    <Button
+        android:id="@+id/sub_comment_but"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Comment"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>

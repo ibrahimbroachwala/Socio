@@ -13,8 +13,4 @@
                 android:title="Search Users"
             />
 
-        <item android:id="@+id/logout_but"
-            android:title="Logout"
-            android:icon="@drawable/ic_exit_to_app_black_24dp"
-            />
 </menu>

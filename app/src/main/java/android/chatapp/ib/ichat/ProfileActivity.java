@@ -3,6 +3,8 @@ package android.chatapp.ib.ichat;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -31,9 +33,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView mprofile_name,mprofile_status,mprofile_friendscount;
+    private TextView mprofile_name,mprofile_status;
     private CircleImageView mprofile_image;
-    private Button mprofile_frndreq_but,mprof_frnreq_dec_but;
+    private Button mprofile_frndreq_but,mprof_frnreq_dec_but,mprofile_friends_but,mprofile_moments_but;
 
 
 
@@ -48,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference mFriendDatabase;
     private DatabaseReference rootref;
     private DatabaseReference notiref;
+    private DatabaseReference postsRef;
     private String Uid,user_key;
 
 
@@ -88,16 +91,19 @@ public class ProfileActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_key);
         mFriendreqDatabase = FirebaseDatabase.getInstance().getReference().child("Friendreq");
         mFriendDatabase = FirebaseDatabase.getInstance().getReference().child("Friends");
+        postsRef = FirebaseDatabase.getInstance().getReference().child("UsersPost");
         Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         rootref = FirebaseDatabase.getInstance().getReference();
         notiref = rootref.child("Notifications");
         mUserDatabase = rootref.child("Users").child(Uid);
-        mprofile_friendscount = (TextView) findViewById(R.id.prof_frcount);
+
         mprofile_name =(TextView) findViewById(R.id.prof_name);
         mprofile_status = (TextView) findViewById(R.id.prof_status);
         mprofile_frndreq_but = (Button) findViewById(R.id.prof_frreq_but);
         mprofile_image = (CircleImageView) findViewById(R.id.prof_image);
         mprof_frnreq_dec_but = (Button) findViewById(R.id.prof_frreq_decline_but);
+        mprofile_friends_but = (Button) findViewById(R.id.prof_friends_but);
+        mprofile_moments_but = (Button) findViewById(R.id.prof_moments_but);
 
 
         mDatabase.keepSynced(true);
@@ -107,21 +113,13 @@ public class ProfileActivity extends AppCompatActivity {
             mprofile_frndreq_but.setVisibility(View.GONE);
 
         mprof_frnreq_dec_but.setVisibility(View.GONE);
+        mprofile_friends_but.setVisibility(View.GONE);
+        mprofile_moments_but.setVisibility(View.GONE);
         mprof_frnreq_dec_but.setEnabled(false);
 
 
 
-        mFriendDatabase.child(user_key).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mprofile_friendscount.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        loadFriendsAndMomentsCount();
 
 
         mDatabase.addValueEventListener(new ValueEventListener() {
@@ -165,7 +163,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 mprofile_frndreq_but.setText("Cancel Friend Request");
                                 curr_state = 1;
 
-                                mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
+                                mprof_frnreq_dec_but.setVisibility(View.GONE);
                                 mprof_frnreq_dec_but.setEnabled(false);
                             }
                         }
@@ -182,6 +180,11 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.hasChild(user_key)){
                             curr_state = 3 ;
+
+                            mprofile_frndreq_but.setBackgroundResource(R.drawable.bgwhite);
+                            mprofile_frndreq_but.setTextColor(Color.BLACK);
+                            mprofile_friends_but.setVisibility(View.VISIBLE);
+                            mprofile_moments_but.setVisibility(View.VISIBLE);
                             mprofile_frndreq_but.setText("Unfriend");
                         }
                     }
@@ -269,42 +272,12 @@ public class ProfileActivity extends AppCompatActivity {
                                             curr_state = 1;
                                             mprofile_frndreq_but.setText("Cancel Friend Request");
                                             Toast.makeText(ProfileActivity.this, "Request sent Succesfully", Toast.LENGTH_SHORT).show();
-                                            mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
+                                            mprof_frnreq_dec_but.setVisibility(View.GONE);
                                             mprof_frnreq_dec_but.setEnabled(false);
                                         }
                                     });
                                 }
                             });
-
-
-
-
-//                    mFriendreqDatabase.child(Uid).child(user_key).child("req_type")
-//                            .setValue("sent").addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            if(task.isSuccessful()){
-//
-//                                mFriendreqDatabase.child(user_key).child(Uid).child("req_type").setValue("received")
-//                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void aVoid) {
-//
-//                                                mprofile_frndreq_but.setEnabled(true);
-//                                                curr_state = 1;
-//                                                mprofile_frndreq_but.setText("Cancel Friend Request");
-//                                                Toast.makeText(ProfileActivity.this, "Request sent Succesfully", Toast.LENGTH_SHORT).show();
-//                                                mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
-//                                                mprof_frnreq_dec_but.setEnabled(false);
-//
-//                                            }
-//                                        });
-//
-//                            }else{
-//                                Toast.makeText(ProfileActivity.this, "Friend req unsuccessful", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    });
 
                 }
 
@@ -322,7 +295,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     curr_state = 0;
                                     mprofile_frndreq_but.setText("Send Friend Request");
 
-                                    mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
+                                    mprof_frnreq_dec_but.setVisibility(View.GONE);
                                     mprof_frnreq_dec_but.setEnabled(false);
                                 }
                             });
@@ -354,44 +327,15 @@ public class ProfileActivity extends AppCompatActivity {
                                     pd.dismiss();
                                     mprofile_frndreq_but.setEnabled(true);
                                     curr_state = 3;
+                                    mprofile_friends_but.setVisibility(View.VISIBLE);
+                                    mprofile_moments_but.setVisibility(View.VISIBLE);
                                     mprofile_frndreq_but.setText("Unfriend");
-
-                                    mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
+                                    mprofile_frndreq_but.setBackgroundResource(R.drawable.bgwhite);
+                                    mprofile_frndreq_but.setTextColor(Color.BLACK);
+                                    mprof_frnreq_dec_but.setVisibility(View.GONE);
                                     mprof_frnreq_dec_but.setEnabled(false);
                                 }
                             });
-
-//                    mFriendDatabase.child(Uid).child(user_key).setValue(currDate)
-//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//                                    mFriendDatabase.child(user_key).child(Uid).setValue(currDate)
-//                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void aVoid) {
-//                                                    mFriendreqDatabase.child(Uid).child(user_key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                        @Override
-//                                                        public void onSuccess(Void aVoid) {
-//                                                            mFriendreqDatabase.child(user_key).child(Uid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                                @Override
-//                                                                public void onSuccess(Void aVoid) {
-//
-//                                                                    pd.dismiss();
-//                                                                    mprofile_frndreq_but.setEnabled(true);
-//                                                                    curr_state = 3;
-//                                                                    mprofile_frndreq_but.setText("Unfriend");
-//
-//                                                                    mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
-//                                                                    mprof_frnreq_dec_but.setEnabled(false);
-//                                                                }
-//                                                            });
-//                                                        }
-//                                                    });
-//
-//                                                }
-//                                            });
-//                                }
-//                            });
                 }
 
                 //Unfriend
@@ -408,10 +352,14 @@ public class ProfileActivity extends AppCompatActivity {
                                     mFriendDatabase.child(user_key).child(Uid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
+
+
                                             mprofile_frndreq_but.setEnabled(true);
                                             curr_state =0;
                                             mprofile_frndreq_but.setText("Send Friend Request");
-                                            mprof_frnreq_dec_but.setVisibility(View.INVISIBLE);
+                                            mprof_frnreq_dec_but.setVisibility(View.GONE);
+                                            mprofile_friends_but.setVisibility(View.GONE);
+                                            mprofile_moments_but.setVisibility(View.GONE);
                                             mprof_frnreq_dec_but.setEnabled(false);
                                         }
                                     });
@@ -426,5 +374,38 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+    public void loadFriendsAndMomentsCount(){
+
+        mFriendDatabase.child(user_key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mprofile_friends_but.setText("Friends ("+String.valueOf(dataSnapshot.getChildrenCount())+")");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        postsRef.child(user_key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mprofile_moments_but.setText("Moments ("+String.valueOf(dataSnapshot.getChildrenCount())+")");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
     }
 }

@@ -142,25 +142,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id)
         {
-
-            case R.id.logout_but :
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setTitle("Logout").setMessage("Do you want to logout?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-
-                        mUserref.child("online").setValue(ServerValue.TIMESTAMP);
-
-                        mAuth.signOut();
-                        sendToStart();
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                }).show();
-
-                break;
             case R.id.profile_but:
                 Intent set_intent = new Intent(MainActivity.this,SettingsActivity.class);
                 startActivity(set_intent);
