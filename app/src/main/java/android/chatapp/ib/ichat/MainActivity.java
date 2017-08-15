@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mviewpager;
     private MainPagerAdapter mPa;
     private TabLayout mTabLayout;
+    private FloatingActionButton fab;
 
     private DatabaseReference mUserref;
 
@@ -41,42 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-//        if(getIntent().getExtras()!=null){
-//
-//            for(String key:getIntent().getExtras().keySet()){
-//
-//                switch (key){
-//                    case "type": type = getIntent().getExtras().getString(key);
-//                        break;
-//                    case "from_user_id": userid = getIntent().getExtras().getString(key);
-//                        break;
-//                    case "from_username": username = getIntent().getExtras().getString(key);
-//                }
-//
-//            }
-//
-//            if(type.equals("message")){
-//                Intent chatIntent = new Intent(MainActivity.this,ChatActivity.class);
-//                chatIntent.putExtra("userid",userid);
-//                chatIntent.putExtra("username",username);
-//                startActivity(chatIntent);
-//            }else if(type.equals("request")){
-//
-//                Intent profIntent = new Intent(MainActivity.this,ProfileActivity.class);
-//                profIntent.putExtra("userid",userid);
-//                startActivity(profIntent);
-//            }
-//
-//
-//        }
-
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
-
+        fab = (FloatingActionButton) findViewById(R.id.fab_add);
         mAuth = FirebaseAuth.getInstance();
 
         if(mAuth.getCurrentUser() != null)
@@ -89,7 +58,56 @@ public class MainActivity extends AppCompatActivity {
         mviewpager.setAdapter(mPa);
 
         mTabLayout.setupWithViewPager(mviewpager);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
+                startActivity(intent);
+            }
+        });
+        fab.show();
 
+        mviewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                switch (position) {
+                    case 0:
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                        fab.show();
+                        break;
+                    case 2:
+                        fab.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(MainActivity.this, UsersActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                        fab.show();
+                        break;
+
+                    default:
+                        fab.hide();
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
 
 

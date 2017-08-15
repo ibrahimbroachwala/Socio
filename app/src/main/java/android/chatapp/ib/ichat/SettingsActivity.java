@@ -228,22 +228,33 @@ public class SettingsActivity extends AppCompatActivity {
         pd.setCanceledOnTouchOutside(false);
         pd.show();
 
-        File thumb_file = new File(resultUri.getPath());
+        File file = new File(resultUri.getPath());
 
-        Bitmap compressedImageBitmap = new Compressor(this)
+
+        Bitmap compressedImageBitmap_thumb = new Compressor(this)
                 .setMaxHeight(200)
                 .setMaxWidth(200)
                 .setQuality(75)
-                .compressToBitmap(thumb_file);
+                .compressToBitmap(file);
+
+        Bitmap compressedImageBitmap_prof = new Compressor(this)
+                .setMaxHeight(400)
+                .setMaxWidth(400)
+                .setQuality(60)
+                .compressToBitmap(file);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        compressedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        compressedImageBitmap_thumb.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        compressedImageBitmap_prof.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
         final byte[] thumb_data = baos.toByteArray();
+        final byte[] bigdata = baos.toByteArray();
 
         StorageReference filepath = mStorageRef.child("profile_images").child(Uid+".jpg");
         final StorageReference thumb_filepath = mStorageRef.child("profile_images").child("thumbs").child(Uid+".jpg");
 
-        filepath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        UploadTask uploadTaskbig = filepath.putBytes(bigdata);
+        uploadTaskbig.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()){

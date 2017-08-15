@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,6 +75,8 @@ public class ChatActivity extends AppCompatActivity {
     private EditText messagetext;
 
     private RecyclerView mmessageslist;
+
+    private String Uid;
 
     private final List<Messages> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
@@ -119,6 +122,7 @@ public class ChatActivity extends AppCompatActivity {
         setSupportActionBar(mtoolbar);
 
         mAuth = FirebaseAuth.getInstance();
+        Uid = mAuth.getCurrentUser().getUid();
 
         //mAdapter = new MessageAdapter(messagesList);
 
@@ -252,7 +256,6 @@ public class ChatActivity extends AppCompatActivity {
         });
         
         
-        
         sendbut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -296,8 +299,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void uploadImage(Uri resultUri) {
-
-        final String Uid = mAuth.getCurrentUser().getUid();
 
         Random random = new Random();
 
@@ -358,7 +359,7 @@ public class ChatActivity extends AppCompatActivity {
 
         final String Uid = mAuth.getCurrentUser().getUid();
         Query mref = mRootref.child("messages").child(Uid)
-               .child(mChatuser).limitToLast(40);
+               .child(mChatuser).limitToLast(60);
 
 
         final FirebaseRecyclerAdapter<Messages,mViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Messages, mViewHolder>(
@@ -587,6 +588,21 @@ public class ChatActivity extends AppCompatActivity {
         messagetext.setText("");
         final String Uid = mAuth.getCurrentUser().getUid();
 
+
+        Map chatusermap = new HashMap();
+        chatusermap.put("Chat/"+mChatuser+"/"
+                +Uid+"/timestamp",ServerValue.TIMESTAMP);
+        chatusermap.put("Chat/"+Uid+"/"+mChatuser+"/timestamp",ServerValue.TIMESTAMP);
+
+        mRootref.updateChildren(chatusermap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError!=null){
+                    Log.d("CHAT_LOG",databaseError.getMessage().toString());
+                }
+            }
+        });
+
         if(!TextUtils.isEmpty(message)){
 
             mRootref.child("Chat").child(mChatuser).addValueEventListener(new ValueEventListener() {
@@ -617,6 +633,9 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
+
+
+
 
 
 

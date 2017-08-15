@@ -1,7 +1,8 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="android.chatapp.ib.ichat.PostsFragment">
 
    <android.support.v7.widget.RecyclerView
@@ -12,12 +13,4 @@
     </android.support.v7.widget.RecyclerView>
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add_post"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_add_black_24dp" />
-</FrameLayout>
+</RelativeLayout>

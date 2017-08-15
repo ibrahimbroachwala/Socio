@@ -43,6 +43,7 @@ public class ChatsFragment extends Fragment {
     private DatabaseReference rootRef;
     private DatabaseReference userRef;
     private DatabaseReference messageRef;
+    private LinearLayoutManager llm;
 
     private String sharedText;
     private Uri shared_imgUri;
@@ -69,9 +70,9 @@ public class ChatsFragment extends Fragment {
         userRef.keepSynced(true);
         messageRef.keepSynced(true);
 
-
+        llm = new LinearLayoutManager(getActivity());
         chats_rv.setHasFixedSize(true);
-        chats_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        chats_rv.setLayoutManager(llm);
 
 
         return v;
@@ -86,7 +87,7 @@ public class ChatsFragment extends Fragment {
                 Chats.class,
                 R.layout.user_item,
                 ChatsViewHolder.class,
-                chatRef.child(Uid)
+                chatRef.child(Uid).orderByChild("timestamp")
         ) {
             @Override
             protected void populateViewHolder(final ChatsViewHolder viewHolder, Chats model, int position) {
@@ -197,6 +198,16 @@ public class ChatsFragment extends Fragment {
         };
 
         chats_rv.setAdapter(firebaseRecyclerAdapter);
+        llm.smoothScrollToPosition(chats_rv,null,0);
+        firebaseRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                chats_rv.smoothScrollToPosition(positionStart+1);
+                llm.setReverseLayout(true);
+                llm.setStackFromEnd(true);
+            }
+        });
 
     }
 

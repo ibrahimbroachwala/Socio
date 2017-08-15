@@ -205,6 +205,18 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+
+
+        mprofile_friends_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent friendProfileIntent = new Intent(ProfileActivity.this,UserFriendsActivity.class);
+                friendProfileIntent.putExtra("user_id",user_key);
+                startActivity(friendProfileIntent);
+            }
+        });
+
+
         //Decline friend request
 
         mprof_frnreq_dec_but.setOnClickListener(new View.OnClickListener() {

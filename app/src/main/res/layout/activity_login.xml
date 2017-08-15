@@ -16,70 +16,76 @@
         android:orientation="vertical"
        >
 
-        <TextView
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:id="@+id/login_card"
+            android:elevation="10dp"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/login_card"
-            android:layout_marginBottom="15dp"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="sans-serif-condensed"
-            android:text="Login"
-            android:textColor="@color/bgwhite"
-            android:textSize="22dp" />
+            android:layout_above="@+id/log_but">
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:id="@+id/login_card"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/bgwhite">
+            android:background="@color/colorPrimary">
 
 
-        <android.support.design.widget.TextInputLayout
+            <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:layout_marginTop="20dp"
+            android:textColorHint="@color/bgwhite"
+            android:layout_marginTop="10dp"
             android:id="@+id/log_email">
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:inputType="textEmailAddress"
+                android:textColor="#fff"
+                android:background="@android:color/transparent"
+                android:textColorHint="@color/bgwhite"
                 android:hint="Email" />
-        </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+            <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
+            android:textColorHint="@color/bgwhite"
             android:paddingBottom="20dp"
             android:id="@+id/log_pass">
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:hint="Password"
+                android:background="@android:color/transparent"
+                android:textColor="#fff"
+                android:textColorHint="@color/bgwhite"
                 android:inputType="textPassword"/>
-        </android.support.design.widget.TextInputLayout>
-
-            <Button
-                android:id="@+id/log_but"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:background="@color/colorAccent"
-                android:fontFamily="sans-serif-condensed"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="Login"
-                android:textColor="#ffffff" />
-
+            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/log_but"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Login"
+        android:textColor="#ffffff" />
+
+
 
 
     </RelativeLayout>

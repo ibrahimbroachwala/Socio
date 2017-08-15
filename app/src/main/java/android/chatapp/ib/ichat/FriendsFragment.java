@@ -55,15 +55,6 @@ public class FriendsFragment extends Fragment {
         friends_rv.setHasFixedSize(true);
         friends_rv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab_add_friend);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Click action
-                Intent intent = new Intent(getContext(), UsersActivity.class);
-                startActivity(intent);
-            }
-        });
 
         return v;
     }

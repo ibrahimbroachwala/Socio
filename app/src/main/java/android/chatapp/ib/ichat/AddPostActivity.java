@@ -1,6 +1,7 @@
 package android.chatapp.ib.ichat;
 
 import android.app.ProgressDialog;
+import android.chatapp.ib.ichat.R;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;

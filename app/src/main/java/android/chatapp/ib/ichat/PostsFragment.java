@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
@@ -48,6 +49,7 @@ public class PostsFragment extends Fragment{
     DatabaseReference allPostsRef;
 
     LinearLayoutManager linearLayoutManager;
+    private static final String RECYCLER_ID = "RECYCLER_ID";
 
 
     FirebaseAuth mAuth;
@@ -84,20 +86,25 @@ public class PostsFragment extends Fragment{
         posts_rv.setLayoutManager(linearLayoutManager);
 
 
-
-
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab_add_post);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Click action
-                Intent intent = new Intent(getContext(), AddPostActivity.class);
-                startActivity(intent);
-            }
-        });
         return v;
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if(savedInstanceState != null)
+        {
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(RECYCLER_ID);
+            linearLayoutManager.onRestoreInstanceState(savedRecyclerLayoutState);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(RECYCLER_ID, linearLayoutManager.onSaveInstanceState());
+    }
 
     @Override
     public void onStart() {
@@ -109,6 +116,7 @@ public class PostsFragment extends Fragment{
                 MomentsViewHolder.class,
                 postRef.child(Uid)
         ) {
+
             @Override
             protected void populateViewHolder(final MomentsViewHolder viewHolder, Moment model, int position) {
 
@@ -159,7 +167,7 @@ public class PostsFragment extends Fragment{
                                             allPostsRef.child(moment_id).child("likes").setValue(likes-1).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(getContext(), "Unliked", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), "Unliked", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         }
