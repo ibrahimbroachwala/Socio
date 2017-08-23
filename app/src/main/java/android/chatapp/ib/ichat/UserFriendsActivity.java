@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -40,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +62,7 @@ public class UserFriendsActivity extends AppCompatActivity {
     private String user_id;
     private RecyclerView userfriends_rv;
     private String receivedText;
-    private Uri receivedUri;
+    public Uri receivedUri;
 
     private int MODE;
 
@@ -92,10 +94,10 @@ public class UserFriendsActivity extends AppCompatActivity {
         }
         else {
             receivedText = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-            receivedUri = getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
+            receivedUri = (Uri) getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
             user_id = Uid;
             MODE = 1;
-            getSupportActionBar().setTitle(receivedText);
+            getSupportActionBar().setTitle("Share to..");
         }
 
 
@@ -103,6 +105,10 @@ public class UserFriendsActivity extends AppCompatActivity {
         friendsRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(user_id);
         mRootref = FirebaseDatabase.getInstance().getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
+
+
+        friendsRef.keepSynced(true);
+        userRef.keepSynced(true);
 
 
        final FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Friends, UsersViewHolder>(
@@ -178,35 +184,57 @@ public class UserFriendsActivity extends AppCompatActivity {
            userRef.child(muser.getUid()).child("online").setValue("true");
 
     }
-    private String getRealPathFromURI(Uri contentURI) {
 
-        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
 
-            cursor.moveToFirst();
-            int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            return cursor.getString(index);
-
-    }
     private void uploadImage(Uri resultUri,final String mChatuser) {
 
         Random random = new Random();
 
+        Map chatusermap = new HashMap();
+        chatusermap.put("Chat/"+mChatuser+"/"
+                +Uid+"/timestamp",ServerValue.TIMESTAMP);
+        chatusermap.put("Chat/"+Uid+"/"+mChatuser+"/timestamp",ServerValue.TIMESTAMP);
+
+        mRootref.updateChildren(chatusermap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError!=null){
+                    Log.d("CHAT_LOG",databaseError.getMessage().toString());
+                }
+            }
+        });
+
         StorageReference filepath = mStorageRef.child("image_messages").child(Uid).child(mChatuser).child(random.nextInt(10000000)+".jpg");
-        File image_file = new File(getRealPathFromURI(resultUri));
-        Bitmap compressedImageBitmap = new Compressor(this)
-                .setMaxHeight(400)
-                .setMaxWidth(400)
-                .setQuality(2)
-                .compressToBitmap(image_file);
+//        File image_file = new File(getRealPathFromURI(resultUri));
+//        Bitmap compressedImageBitmap = new Compressor(this)
+//                .setMaxHeight(400)
+//                .setMaxWidth(400)
+//                .setQuality(2)
+//                .compressToBitmap(image_file);
+//
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        compressedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//        final byte[] image_data = baos.toByteArray();
+//
 
+        InputStream imageStream = null;
+        try {
+            imageStream = getContentResolver().openInputStream(
+                    resultUri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Bitmap bmp = BitmapFactory.decodeStream(imageStream);
+        bmp = resize(bmp,800,800);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        compressedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        final byte[] image_data = baos.toByteArray();
-        UploadTask uploadTask = filepath.putBytes(image_data);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] data = baos.toByteArray();
 
+        UploadTask uploadTask = filepath.putBytes(data);
         uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
                 @SuppressWarnings("VisibleForTests") String download_url = task.getResult().getDownloadUrl().toString();
                 if(task.isSuccessful()){
                     String curruserref = "messages/"+Uid+"/"+mChatuser;
@@ -242,6 +270,28 @@ public class UserFriendsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > 1) {
+                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
+        }
+    }
+
 
 
     private void sendmessage(final String mChatuser) {

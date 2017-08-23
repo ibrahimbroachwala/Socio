@@ -31,6 +31,8 @@ public class FirebaseMessagingServiceClass extends FirebaseMessagingService {
         String noticlick = remoteMessage.getNotification().getClickAction();
         String userid = remoteMessage.getData().get("from_user_id");
         String username = remoteMessage.getData().get("from_username");
+        String mom_by_id = remoteMessage.getData().get("name");
+        String moment_id = remoteMessage.getData().get("moment_id");
 
 
 
@@ -39,6 +41,9 @@ public class FirebaseMessagingServiceClass extends FirebaseMessagingService {
         resultIntent = new Intent(noticlick);
         resultIntent.putExtra("from_user_id",userid);
         resultIntent.putExtra("username",username);
+        resultIntent.putExtra("name",mom_by_id);
+        resultIntent.putExtra("moment_id",moment_id);
+
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, resultIntent,
                 PendingIntent.FLAG_ONE_SHOT);

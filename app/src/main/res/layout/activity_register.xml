@@ -46,7 +46,6 @@
             android:inputType="textPersonName"
             android:textColorHint="@color/bgwhite"
             android:textColor="#fff"
-            android:background="@android:color/transparent"
             android:layout_height="50dp"
             android:hint="Full Name" />
     </android.support.design.widget.TextInputLayout>
@@ -65,7 +64,6 @@
             android:layout_height="50dp"
             android:textColorHint="@color/bgwhite"
             android:textColor="#fff"
-            android:background="@android:color/transparent"
             android:inputType="textEmailAddress"
             android:hint="Email" />
     </android.support.design.widget.TextInputLayout>
@@ -82,7 +80,6 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:background="@android:color/transparent"
             android:layout_height="50dp"
             android:textColorHint="@color/bgwhite"
             android:textColor="#fff"

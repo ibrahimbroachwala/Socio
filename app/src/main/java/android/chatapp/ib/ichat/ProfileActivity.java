@@ -217,6 +217,17 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
+        mprofile_moments_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent friendmomentIntent = new Intent(ProfileActivity.this,UserMomentsActivity.class);
+                friendmomentIntent.putExtra("user_id",user_key);
+                startActivity(friendmomentIntent);
+            }
+        });
+
+
         //Decline friend request
 
         mprof_frnreq_dec_but.setOnClickListener(new View.OnClickListener() {
@@ -391,7 +402,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void loadFriendsAndMomentsCount(){
 
-        mFriendDatabase.child(user_key).addListenerForSingleValueEvent(new ValueEventListener() {
+        mFriendDatabase.child(user_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mprofile_friends_but.setText("Friends ("+String.valueOf(dataSnapshot.getChildrenCount())+")");
@@ -404,7 +415,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-        postsRef.child(user_key).addListenerForSingleValueEvent(new ValueEventListener() {
+        postsRef.child(user_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mprofile_moments_but.setText("Moments ("+String.valueOf(dataSnapshot.getChildrenCount())+")");

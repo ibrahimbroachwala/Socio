@@ -45,8 +45,6 @@ public class ChatsFragment extends Fragment {
     private DatabaseReference messageRef;
     private LinearLayoutManager llm;
 
-    private String sharedText;
-    private Uri shared_imgUri;
 
 
 

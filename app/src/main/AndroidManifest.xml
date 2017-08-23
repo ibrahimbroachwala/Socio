@@ -20,7 +20,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity android:name=".StartActivity" />
 
@@ -67,8 +66,15 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".CommentsActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".UserFriendsActivity"
+            android:parentActivityName=".MainActivity">
+            <intent-filter>
+                <action android:name="android.chatapp.ib.ichat_TARGET_CNOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".UserFriendsActivity"
             android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -85,6 +91,8 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <activity android:name=".UserMomentsActivity"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>

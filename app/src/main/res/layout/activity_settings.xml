@@ -24,7 +24,8 @@
             android:src="@drawable/ic_person_black_24dp"/>
         <ImageButton
             android:layout_width="36dp"
-            android:layout_height="37dp"
+            android:layout_height="36dp"
+            android:padding="4dp"
             android:layout_marginTop="8dp"
             android:id="@+id/settings_edit_image_but"
             android:src="@drawable/ic_camera_alt_black_24dp"
@@ -35,9 +36,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:id="@+id/settings_dname"
-            android:layout_margin="20dp"
+            android:layout_marginTop="10dp"
             android:textColor="#ffffff"
-            android:layout_marginTop="20dp"
             android:layout_height="wrap_content"
             android:text="Name"
             android:layout_gravity="center"
@@ -45,44 +45,96 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             >
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:padding="5dp"
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:background="@color/colorPrimary"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:layout_width="wrap_content"
                     android:id="@+id/settings_status"
+                    android:layout_width="309dp"
                     android:layout_height="wrap_content"
-                    android:text="Status"
-                    android:layout_margin="10dp"
-                    android:textColor="#ffffff"
-                    android:textStyle="italic"
+                    android:layout_toLeftOf="@+id/settings_edit_status_but"
                     android:layout_gravity="center"
-                    android:textSize="18dp"/>
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:text="Status"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp"
+                    android:textStyle="italic" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:padding="10dp"
+                    android:layout_alignParentEnd="true"
                     android:background="@color/colorPrimary"
                     android:id="@+id/settings_edit_status_but"
                     android:src="@drawable/ic_edit_black_24dp"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </android.support.v7.widget.CardView>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom">
+
+
+        <LinearLayout
+            android:id="@+id/settings_but_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_above="@+id/settings_logout_but_layout"
+            android:weightSum="10"
+            >
+            <Button
+                android:layout_weight="5"
+                android:id="@+id/settings_friends_but"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:background="@color/colorAccent"
+                android:fontFamily="sans-serif-condensed"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="Friends"
+                android:textColor="#fff" />
+
+            <Button
+                android:layout_weight="5"
+                android:id="@+id/settings_moments_but"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:background="@color/colorAccent"
+                android:fontFamily="sans-serif-condensed"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="Moments"
+                android:textColor="#fff" />
+
+
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_logout_but_layout"
+            android:layout_alignParentBottom="true"
+            >
 
             <Button
                 android:id="@+id/settings_logout_but"
@@ -97,6 +149,8 @@
                 android:textColor="@color/colorPrimaryDark" />
 
         </LinearLayout>
+
+        </RelativeLayout>
 
 
 

@@ -37,14 +37,19 @@ public class CommentsActivity extends AppCompatActivity {
     
     DatabaseReference usersRef;
     DatabaseReference rootRef;
+    DatabaseReference userpostsRef;
+    DatabaseReference allpostsRef;
     TextView commentOnTv;
     RecyclerView commentsRv;
     Button subCommentBut;
     TextView commentOnTime;
+    TextView commentOnPerson;
     LinearLayoutManager llm;
     EditText AddCommentEt;
     FirebaseAuth mAuth;
     String Uid;
+    String moment_by;
+    ImageView commentOnImage;
 
 
     @Override
@@ -62,17 +67,42 @@ public class CommentsActivity extends AppCompatActivity {
         subCommentBut = (Button) findViewById(R.id.sub_comment_but);
         commentsRv = (RecyclerView) findViewById(R.id.comments_rv);
         commentOnTv = (TextView) findViewById(R.id.comment_on_tv);
-        
-
-
-
-        
-
+        commentOnImage = (ImageView) findViewById(R.id.comment_on_image);
+        commentOnPerson = (TextView) findViewById(R.id.comment_on_person);
 
         final String moment_id = getIntent().getStringExtra("moment_id");
-        String by = getIntent().getStringExtra("name");
-        String time = getIntent().getStringExtra("time");
-        commentOnTime.setText("shared "+time);
+        moment_by = getIntent().getStringExtra("name");
+
+
+        userpostsRef = FirebaseDatabase.getInstance().getReference().child("UsersPost");
+        allpostsRef = FirebaseDatabase.getInstance().getReference().child("AllPosts");
+
+
+
+        allpostsRef.child(moment_id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String timestamp = dataSnapshot.child("timestamp").getValue().toString();
+                GetTimeAgo gta = new GetTimeAgo();
+                final String momentposttime = gta.getTimeAgo(Long.valueOf(timestamp));
+                String text = dataSnapshot.child("text").getValue().toString();
+                String image = dataSnapshot.child("image").getValue().toString();
+
+
+                if(!image.equals("noimage"))
+                    Picasso.with(CommentsActivity.this).load(image).into(commentOnImage);
+                commentOnTime.setText("shared "+momentposttime);
+                commentOnTv.setText(text);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
         llm = new LinearLayoutManager(this);
         commentsRv.setHasFixedSize(true);
@@ -84,14 +114,14 @@ public class CommentsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         Uid = mAuth.getCurrentUser().getUid();
 
-        if(Uid.equals(by)){
-            commentOnTv.setText("On Your moment");
+        if(Uid.equals(moment_by)){
+            commentOnPerson.setText("On Your moment");
         }else {
-            usersRef.child(by).addListenerForSingleValueEvent(new ValueEventListener() {
+            usersRef.child(moment_by).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String name = dataSnapshot.child("name").getValue().toString();
-                    commentOnTv.setText("On " + name + "'s moment");
+                    commentOnPerson.setText("On " + name + "'s moment");
 
                 }
 
@@ -126,12 +156,21 @@ public class CommentsActivity extends AppCompatActivity {
             commentMap.put("by", Uid);
             commentMap.put("text", commentToPost);
 
+            final Map commentNotimap = new HashMap();
+            commentNotimap.put("comment_by",Uid);
+            commentNotimap.put("moment_id",moment_id);
+
             rootRef.child("AllPosts").child(moment_id).child("comments").push().setValue(commentMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
 
-                    Toast.makeText(CommentsActivity.this, "Comment Added", Toast.LENGTH_SHORT).show();
 
+                    rootRef.child("CommentNoti").child(moment_by).push().setValue(commentNotimap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(CommentsActivity.this, "Comment Added", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }else{
@@ -167,9 +206,11 @@ public class CommentsActivity extends AppCompatActivity {
                 final String commentposttime = gta.getTimeAgo(timestamp);
                 viewHolder.setTime(commentposttime);
                 viewHolder.setText(text);
+
+
+
                 
-                
-                if(By.equals(Uid)){
+                if(By.equals(Uid) || moment_by.equals(Uid)){
                     viewHolder.setDeleteView(true);
                     
                     viewHolder.delete_comment_but.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +228,7 @@ public class CommentsActivity extends AppCompatActivity {
                     });
                     
                 }else{
+
                     viewHolder.setDeleteView(false);
                 }
 

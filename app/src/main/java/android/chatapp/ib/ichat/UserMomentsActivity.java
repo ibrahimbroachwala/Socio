@@ -4,16 +4,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,12 +30,11 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * Created by ibrah on 8/9/2017.
- */
+public class UserMomentsActivity extends AppCompatActivity {
 
-public class PostsFragment extends Fragment{
 
+    private String Uid;
+    private FirebaseAuth mAuth;
 
     private DatabaseReference postRef;
     private DatabaseReference userRef;
@@ -46,54 +42,57 @@ public class PostsFragment extends Fragment{
     private DatabaseReference friendsRef;
     private DatabaseReference usersPostRef;
 
+    private RecyclerView moments_rv;
+    private ArrayList<String> friends_IdList;
+
+    private ProgressDialog pd;
     private LinearLayoutManager linearLayoutManager;
 
 
-    private ArrayList<String> friends_IdList;
-    
-    private ProgressDialog pd;
+    private String user_id;
 
 
-    private FirebaseAuth mAuth;
-    private String Uid;
-    private RecyclerView posts_rv;
-
-
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_posts,container,false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_user_moments);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.user_moments_appbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("Moments");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         mAuth = FirebaseAuth.getInstance();
         Uid = mAuth.getCurrentUser().getUid();
 
 
+        linearLayoutManager = new LinearLayoutManager(UserMomentsActivity.this);
+        linearLayoutManager.setReverseLayout(true);
+
+        user_id = getIntent().getStringExtra("user_id");
+
+
+
+
+        pd = new ProgressDialog(UserMomentsActivity.this);
+
         postRef = FirebaseDatabase.getInstance().getReference().child("PostsToShow");
         userRef = FirebaseDatabase.getInstance().getReference().child("Users");
         allPostsRef = FirebaseDatabase.getInstance().getReference().child("AllPosts");
-        usersPostRef = FirebaseDatabase.getInstance().getReference().child("UsersPost").child(Uid);
+        usersPostRef = FirebaseDatabase.getInstance().getReference().child("UsersPost");
         friendsRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(Uid);
 
         friends_IdList = new ArrayList<String>();
-        
-        pd = new ProgressDialog(getActivity());
+        moments_rv = (RecyclerView) findViewById(R.id.user_moments_rv);
+        moments_rv.setHasFixedSize(true);
+        moments_rv.setLayoutManager(linearLayoutManager);
 
-        posts_rv = (RecyclerView) v.findViewById(R.id.posts_rv);
-
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-
-        linearLayoutManager.setReverseLayout(true);
-
-
-        posts_rv.setHasFixedSize(true);
-
+        usersPostRef.keepSynced(true);
         allPostsRef.keepSynced(true);
-        postRef.child(Uid).keepSynced(true);
         userRef.keepSynced(true);
+        postRef.keepSynced(true);
 
-
-        posts_rv.setLayoutManager(linearLayoutManager);
 
         friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -111,19 +110,12 @@ public class PostsFragment extends Fragment{
         friends_IdList.add(Uid);
 
 
-        return v;
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
 
         FirebaseRecyclerAdapter<Moment,MomentsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Moment, MomentsViewHolder>(
                 Moment.class,
                 R.layout.moment_item,
                 MomentsViewHolder.class,
-                postRef.child(Uid).limitToLast(20)
+                usersPostRef.child(user_id)
         ) {
 
             @Override
@@ -131,18 +123,16 @@ public class PostsFragment extends Fragment{
 
                 final String By = model.getBy();
                 long timestamp = model.getTimestamp();
-                final String liked = model.getLiked();
-
-
-
 
                 viewHolder.initialize();
+
+                final String moment_id = getRef(position).getKey();
 
                 GetTimeAgo gta = new GetTimeAgo();
                 final String momentposttime = gta.getTimeAgo(timestamp);
                 viewHolder.setTime(momentposttime);
 
-                final String moment_id = getRef(position).getKey();
+
 
                 if(By.equals(Uid)){
                     viewHolder.mom_delete_view.setVisibility(View.VISIBLE);
@@ -150,24 +140,21 @@ public class PostsFragment extends Fragment{
                     viewHolder.mom_delete_view.setVisibility(View.GONE);
                 }
 
-                if(liked.equals("true"))
-                    viewHolder.likes_but.setBackgroundResource(R.drawable.liked);
-                else
-                    viewHolder.likes_but.setBackgroundResource(R.drawable.unliked);
-
 
                 viewHolder.mom_delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UserMomentsActivity.this);
                         alertDialogBuilder.setTitle("Confirm").setMessage("Are you sure you want to delete your moment?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
-                                for(String id: friends_IdList){
+                                pd.setMessage("Deleting moment");
+                                pd.show();
+                                for(final String id: friends_IdList){
                                     postRef.child(id).child(moment_id).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            usersPostRef.child(moment_id).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            usersPostRef.child(id).child(moment_id).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                 }
@@ -178,11 +165,11 @@ public class PostsFragment extends Fragment{
                                 allPostsRef.child(moment_id).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(getActivity(), "Moment Deleted", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(UserMomentsActivity.this, "Moment Deleted", Toast.LENGTH_SHORT).show();
                                         pd.dismiss();
                                     }
                                 });
-                                
+
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -194,55 +181,74 @@ public class PostsFragment extends Fragment{
 
 
 
-
-
-
-
-                allPostsRef.child(moment_id).addValueEventListener(new ValueEventListener() {
+                postRef.child(Uid).child(moment_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        int llikes;
-                        if(dataSnapshot.hasChild("likes"))
-                            llikes = Integer.valueOf(dataSnapshot.child("likes").getValue().toString());
+                        String lliked = "false";
+                        if(dataSnapshot.hasChild("liked"))
+                        lliked = dataSnapshot.child("liked").getValue().toString();
+
+                        final String liked = lliked;
+                        if(liked.equals("true"))
+                            viewHolder.likes_but.setBackgroundResource(R.drawable.liked);
                         else
-                            llikes = 0;
+                            viewHolder.likes_but.setBackgroundResource(R.drawable.unliked);
 
-                        final int likes = llikes;
-                        viewHolder.setLikes(likes);
 
-                        viewHolder.likes_but.setOnClickListener(new View.OnClickListener() {
+                        allPostsRef.child(moment_id).addValueEventListener(new ValueEventListener() {
                             @Override
-                            public void onClick(View v) {
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                if(liked.equals("false")){
-                                    postRef.child(Uid).child(moment_id).child("liked").setValue("true").addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            allPostsRef.child(moment_id).child("likes").setValue(likes+1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                int llikes;
+                                if(dataSnapshot.hasChild("likes"))
+                                    llikes = Integer.valueOf(dataSnapshot.child("likes").getValue().toString());
+                                else
+                                    llikes = 0;
+
+                                final int likes = llikes;
+                                viewHolder.setLikes(likes);
+
+                                viewHolder.likes_but.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        if(liked.equals("false")){
+                                            postRef.child(Uid).child(moment_id).child("liked").setValue("true").addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+                                                    allPostsRef.child(moment_id).child("likes").setValue(likes+1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(UserMomentsActivity.this, "Liked", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
                                                 }
                                             });
-                                        }
-                                    });
-                                }else{
-                                    postRef.child(Uid).child(moment_id).child("liked").setValue("false").addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            allPostsRef.child(moment_id).child("likes").setValue(likes-1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        }else{
+                                            postRef.child(Uid).child(moment_id).child("liked").setValue("false").addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(getActivity(), "Unliked", Toast.LENGTH_SHORT).show();
+                                                    allPostsRef.child(moment_id).child("likes").setValue(likes-1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(UserMomentsActivity.this, "Unliked", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
                                                 }
                                             });
-                                        }
-                                    });
 
-                                }
+                                        }
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
                             }
                         });
+
                     }
 
                     @Override
@@ -251,26 +257,34 @@ public class PostsFragment extends Fragment{
                     }
                 });
 
+
+
+
+
+
                 allPostsRef.child(moment_id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
 
+                            if(dataSnapshot.hasChild("type")) {
+                                if (dataSnapshot.child("type").getValue().toString().equals("text")) {
+                                    viewHolder.setText(dataSnapshot.child("text").getValue().toString());
+                                    viewHolder.imageView.setVisibility(View.GONE);
+                                } else {
+                                    viewHolder.imageView.setVisibility(View.VISIBLE);
+                                    viewHolder.setText(dataSnapshot.child("text").getValue().toString());
+                                    viewHolder.setImage(dataSnapshot.child("image").getValue().toString(), UserMomentsActivity.this);
+                                }
+                            }
 
-
-                        if(dataSnapshot.child("type").getValue().toString().equals("text")){
-                            viewHolder.setText(dataSnapshot.child("text").getValue().toString());
-                            viewHolder.imageView.setVisibility(View.GONE);
-                        }else {
-                            viewHolder.imageView.setVisibility(View.VISIBLE);
-                            viewHolder.setText(dataSnapshot.child("text").getValue().toString());
-                            viewHolder.setImage(dataSnapshot.child("image").getValue().toString(),getContext());
+                            if(dataSnapshot.hasChild("text")) {
+                                if (dataSnapshot.child("text").getValue().toString().equals("")) {
+                                    viewHolder.textView.setVisibility(View.GONE);
+                                } else {
+                                    viewHolder.textView.setVisibility(View.VISIBLE);
+                                }
+                            }
                         }
-                        if(dataSnapshot.child("text").getValue().toString().equals("")){
-                            viewHolder.textView.setVisibility(View.GONE);
-                        }else{
-                            viewHolder.textView.setVisibility(View.VISIBLE);
-                        }
-                    }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -282,7 +296,7 @@ public class PostsFragment extends Fragment{
                 viewHolder.comments_but.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent commentIntent = new Intent(getActivity(),CommentsActivity.class);
+                        Intent commentIntent = new Intent(UserMomentsActivity.this,CommentsActivity.class);
                         commentIntent.putExtra("moment_id",moment_id);
                         commentIntent.putExtra("name",By);
                         commentIntent.putExtra("time",momentposttime);
@@ -321,7 +335,7 @@ public class PostsFragment extends Fragment{
                         String thumbimage = dataSnapshot.child("thumb_image").getValue().toString();
 
                         viewHolder.setName(username);
-                        viewHolder.setDp(thumbimage,getContext());
+                        viewHolder.setDp(thumbimage,UserMomentsActivity.this);
 
 
                     }
@@ -335,18 +349,17 @@ public class PostsFragment extends Fragment{
             }
         };
 
-        posts_rv.setAdapter(firebaseRecyclerAdapter);
-        linearLayoutManager.smoothScrollToPosition(posts_rv,null,0);
+        moments_rv.setAdapter(firebaseRecyclerAdapter);
+        linearLayoutManager.smoothScrollToPosition(moments_rv,null,0);
         firebaseRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-                posts_rv.smoothScrollToPosition(positionStart+1);
+                moments_rv.smoothScrollToPosition(positionStart+1);
                 linearLayoutManager.setReverseLayout(true);
                 linearLayoutManager.setStackFromEnd(true);
             }
         });
-
 
     }
 
@@ -408,4 +421,5 @@ public class PostsFragment extends Fragment{
             timeview.setText(time);
         }
     }
+
 }

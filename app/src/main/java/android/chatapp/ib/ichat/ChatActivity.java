@@ -219,41 +219,41 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-        mRootref.child("Chat").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if(!dataSnapshot.hasChild(mChatuser)){
-
-                    Map chataddmap = new HashMap();
-                    chataddmap.put("seen","false");
-                    chataddmap.put("timestamp",ServerValue.TIMESTAMP);
-
-                    Map chatusermap = new HashMap();
-                    chatusermap.put("Chat/"+mAuth.getCurrentUser().getUid()+"/"
-                    +mChatuser,chataddmap);
-                    chatusermap.put("Chat/"+mChatuser+"/"
-                            +mAuth.getCurrentUser().getUid(),chataddmap);
-
-                    mRootref.updateChildren(chatusermap, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                if(databaseError!=null){
-
-                                    Log.d("CHAT_LOG",databaseError.getMessage().toString());
-                                }
-                        }
-                    });
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        mRootref.child("Chat").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                if(!dataSnapshot.hasChild(mChatuser)){
+//
+//                    Map chataddmap = new HashMap();
+//                    chataddmap.put("seen","false");
+//                    chataddmap.put("timestamp",ServerValue.TIMESTAMP);
+//
+//                    Map chatusermap = new HashMap();
+//                    chatusermap.put("Chat/"+mAuth.getCurrentUser().getUid()+"/"
+//                    +mChatuser,chataddmap);
+//                    chatusermap.put("Chat/"+mChatuser+"/"
+//                            +mAuth.getCurrentUser().getUid(),chataddmap);
+//
+//                    mRootref.updateChildren(chatusermap, new DatabaseReference.CompletionListener() {
+//                        @Override
+//                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                                if(databaseError!=null){
+//
+//                                    Log.d("CHAT_LOG",databaseError.getMessage().toString());
+//                                }
+//                        }
+//                    });
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
         
         
         sendbut.setOnClickListener(new View.OnClickListener() {
@@ -301,6 +301,20 @@ public class ChatActivity extends AppCompatActivity {
     private void uploadImage(Uri resultUri) {
 
         Random random = new Random();
+
+        Map chatusermap = new HashMap();
+        chatusermap.put("Chat/"+mChatuser+"/"
+                +Uid+"/timestamp",ServerValue.TIMESTAMP);
+        chatusermap.put("Chat/"+Uid+"/"+mChatuser+"/timestamp",ServerValue.TIMESTAMP);
+
+        mRootref.updateChildren(chatusermap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError!=null){
+                    Log.d("CHAT_LOG",databaseError.getMessage().toString());
+                }
+            }
+        });
 
         StorageReference filepath = mStorageRef.child("image_messages").child(Uid).child(mChatuser).child(random.nextInt(10000000)+".jpg");
         File image_file = new File(resultUri.getPath());

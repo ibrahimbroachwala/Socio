@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.Contacts;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -51,6 +52,8 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     private DatabaseReference mDatabase;
+    private DatabaseReference mFriendDatabase;
+    private DatabaseReference postsRef;
     private FirebaseUser mCurrUser;
     private FirebaseAuth mAuth;
 
@@ -59,7 +62,10 @@ public class SettingsActivity extends AppCompatActivity {
     private ImageButton mChangeStatusbut;
     private ImageButton mChangeDpbut;
 
-    private Button logout_but;
+
+
+
+    private Button logout_but,mprofile_moments_but,mprofile_friends_but;
 
     private static final int GALLERY_PICK = 1;
     private StorageReference mStorageRef;
@@ -102,11 +108,19 @@ public class SettingsActivity extends AppCompatActivity {
         dp = (CircleImageView) findViewById(R.id.settings_dp);
         mChangeStatusbut = (ImageButton) findViewById(R.id.settings_edit_status_but);
         mChangeDpbut = (ImageButton) findViewById(R.id.settings_edit_image_but);
+        mprofile_friends_but = (Button) findViewById(R.id.settings_friends_but);
+        mprofile_moments_but = (Button) findViewById(R.id.settings_moments_but);
 
         mCurrUser = FirebaseAuth.getInstance().getCurrentUser();
         Uid = mCurrUser.getUid();
+
+        mFriendDatabase = FirebaseDatabase.getInstance().getReference().child("Friends");
+        postsRef = FirebaseDatabase.getInstance().getReference().child("UsersPost");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(Uid);
         mDatabase.keepSynced(true);
+
+
+        loadFriendsAndMomentsCount();
 
 
         logout_but.setOnClickListener(new View.OnClickListener() {
@@ -219,6 +233,56 @@ public class SettingsActivity extends AppCompatActivity {
                         .setAspectRatio(1,1)
                         .start(this);
             }
+    }
+
+    public void loadFriendsAndMomentsCount(){
+
+        mFriendDatabase.child(Uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mprofile_friends_but.setText("Friends ("+String.valueOf(dataSnapshot.getChildrenCount())+")");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        postsRef.child(Uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mprofile_moments_but.setText("Moments ("+String.valueOf(dataSnapshot.getChildrenCount())+")");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mprofile_friends_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent friendProfileIntent = new Intent(SettingsActivity.this,UserFriendsActivity.class);
+                friendProfileIntent.putExtra("user_id",Uid);
+                startActivity(friendProfileIntent);
+            }
+        });
+
+
+        mprofile_moments_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent friendmomentIntent = new Intent(SettingsActivity.this,UserMomentsActivity.class);
+                friendmomentIntent.putExtra("user_id",Uid);
+                startActivity(friendmomentIntent);
+            }
+        });
+
+
+
     }
 
     private void uploadImage(Uri resultUri) {
