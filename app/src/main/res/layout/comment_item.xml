@@ -38,6 +38,7 @@
             android:layout_width="251dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:id="@+id/comment_profile_view"
             android:layout_weight="1.36">
 
             <LinearLayout

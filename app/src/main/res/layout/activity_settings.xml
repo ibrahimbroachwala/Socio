@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorPrimaryDark"
-    tools:context="android.chatapp.ib.ichat.SettingsActivity">
+    tools:context="myapp.chatapp.ib.socio.SettingsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

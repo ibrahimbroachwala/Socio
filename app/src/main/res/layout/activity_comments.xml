@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context="android.chatapp.ib.ichat.CommentsActivity">
+    tools:context="myapp.chatapp.ib.socio.CommentsActivity">
 
     <include layout="@layout/appbar_layout" android:id="@+id/comments_appbar"/>
 

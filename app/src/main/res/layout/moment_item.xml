@@ -36,6 +36,7 @@
             android:layout_width="251dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:id="@+id/profile_view"
             android:gravity="center_vertical"
             android:layout_weight="1.04">
 

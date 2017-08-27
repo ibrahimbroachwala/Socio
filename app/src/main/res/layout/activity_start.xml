@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context="android.chatapp.ib.ichat.StartActivity">
+    tools:context="myapp.chatapp.ib.socio.StartActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,7 +28,17 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/bgwhite"
         android:fontFamily="sans-serif-condensed"
+        android:id="@+id/start_appname"
         android:textSize="30dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/version"
+            android:layout_below="@+id/start_appname"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/bgwhite"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="20dp"/>
 
 
 

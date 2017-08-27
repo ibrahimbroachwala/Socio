@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/colorPrimaryDark"
     android:layout_height="match_parent"
-    tools:context="android.chatapp.ib.ichat.LoginActivity">
+    tools:context="myapp.chatapp.ib.socio.LoginActivity">
 
     <include layout="@layout/appbar_layout" android:id="@+id/login_appbar"/>
 

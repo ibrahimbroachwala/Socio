@@ -6,7 +6,7 @@
     android:background="@color/colorPrimaryDark"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="android.chatapp.ib.ichat.RegisterActivity">
+    tools:context="myapp.chatapp.ib.socio.RegisterActivity">
     <include layout="@layout/appbar_layout" android:id="@+id/reg_appbar"/>
 
 <RelativeLayout
